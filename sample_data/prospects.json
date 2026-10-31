@@ -1,0 +1,81 @@
+[
+  {
+    "scenario": "strong_linkedin_and_company_signals",
+    "description": "Happy path: active LinkedIn presence, recent funding/product news, should produce a high-tier signal and a validated draft.",
+    "prospect": {
+      "name": "Elena Marsh",
+      "company": "Northwind Analytics",
+      "designation": "VP of Engineering",
+      "linkedin_url": "https://www.linkedin.com/in/elena-marsh-example",
+      "company_website": "https://www.northwindanalytics.example.com",
+      "industry": "SaaS / Data Analytics",
+      "outreach_channel": "email",
+      "product_context": "AI-powered workflow automation platform for engineering teams"
+    }
+  },
+  {
+    "scenario": "no_recent_linkedin_activity",
+    "description": "EC-01: no usable LinkedIn evidence; system must fall back to company news / professional research or return insufficient_data without inventing LinkedIn activity.",
+    "prospect": {
+      "name": "Marcus Oduya",
+      "company": "Haverstock Supply Co",
+      "designation": "Director of Operations",
+      "linkedin_url": null,
+      "company_website": "https://www.haverstocksupply.example.com",
+      "industry": "Logistics",
+      "outreach_channel": "linkedin",
+      "product_context": "Supply chain visibility and automation software"
+    }
+  },
+  {
+    "scenario": "conflicting_job_information",
+    "description": "EC-02: multiple sources disagree on this prospect's title/role, which should be flagged as a disputed signal and excluded from outreach drafting.",
+    "prospect": {
+      "name": "Priya Chandrasekaran",
+      "company": "Fieldglass Robotics",
+      "designation": "Chief Operating Officer",
+      "linkedin_url": "https://www.linkedin.com/in/priya-chandrasekaran-example",
+      "company_website": "https://www.fieldglassrobotics.example.com",
+      "industry": "Robotics",
+      "outreach_channel": "email",
+      "product_context": "Operations intelligence platform for manufacturing"
+    }
+  },
+  {
+    "scenario": "insufficient_prospect_information",
+    "description": "EC-03/EC-11: name has no surname, which should be rejected at input validation with an insufficient_data / clarification outcome rather than researching a guessed identity.",
+    "prospect": {
+      "name": "Alex",
+      "company": "Initech",
+      "designation": "Manager",
+      "outreach_channel": "email"
+    }
+  },
+  {
+    "scenario": "outdated_news_only",
+    "description": "EC-04: the only discoverable signals are several years old; recency scoring should push them to LOW tier, likely resulting in insufficient_evidence for drafting.",
+    "prospect": {
+      "name": "Dorian Albescu",
+      "company": "Blackwell Timber Holdings",
+      "designation": "Chief Financial Officer",
+      "company_website": "https://www.blackwelltimber.example.com",
+      "industry": "Forestry / Timber",
+      "outreach_channel": "email",
+      "product_context": "Financial forecasting and reporting automation"
+    }
+  },
+  {
+    "scenario": "duplicate_search_results",
+    "description": "EC-07: the same announcement is indexed under several syndicated/mirrored URLs; URL + content-hash deduplication should collapse them into a single source before signal extraction.",
+    "prospect": {
+      "name": "Camille Dubois-Renard",
+      "company": "Argon Health Systems",
+      "designation": "Chief Technology Officer",
+      "linkedin_url": "https://www.linkedin.com/in/camille-dubois-renard-example",
+      "company_website": "https://www.argonhealthsystems.example.com",
+      "industry": "Healthtech",
+      "outreach_channel": "email",
+      "product_context": "HIPAA-compliant workflow automation for clinical operations teams"
+    }
+  }
+]

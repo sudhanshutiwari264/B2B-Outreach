@@ -1,0 +1,164 @@
+{
+  "strong_linkedin_and_company_signals": {
+    "search_results": [
+      {
+        "url": "https://www.linkedin.com/posts/elena-marsh-example_thrilled-to-share-activity-700000000000000001",
+        "title": "Elena Marsh on LinkedIn: Thrilled to share our Series B",
+        "snippet": "Thrilled to share that Northwind Analytics closed a $28M Series B to expand our engineering team and accelerate our roadmap.",
+        "search_score": 0.91,
+        "published_date": "2026-09-15",
+        "query": "site:linkedin.com/posts/ \"Elena Marsh\" \"Northwind Analytics\"",
+        "category_hint": "linkedin_post"
+      },
+      {
+        "url": "https://www.technewswire.example.com/northwind-analytics-series-b",
+        "title": "Northwind Analytics raises $28M Series B to scale data platform",
+        "snippet": "Northwind Analytics announced today it has raised $28 million in Series B funding led by Example Ventures, with plans to double its engineering headcount over the next year.",
+        "search_score": 0.88,
+        "published_date": "2026-09-14",
+        "query": "\"Northwind Analytics\" funding round OR raises",
+        "category_hint": "funding"
+      }
+    ],
+    "extracted_contents": [
+      {
+        "url": "https://www.technewswire.example.com/northwind-analytics-series-b",
+        "success": true,
+        "title": "Northwind Analytics raises $28M Series B to scale data platform",
+        "text": "Northwind Analytics announced today it has raised $28 million in Series B funding led by Example Ventures, with plans to double its engineering headcount over the next year. VP of Engineering Elena Marsh said the funding will be used to accelerate the company's roadmap and expand its platform into new markets.",
+        "published_at": "2026-09-14",
+        "extraction_method": "trafilatura"
+      }
+    ]
+  },
+
+  "no_recent_linkedin_activity": {
+    "search_results": [
+      {
+        "url": "https://www.logisticsdaily.example.com/haverstock-supply-expansion",
+        "title": "Haverstock Supply Co opens new distribution hub",
+        "snippet": "Haverstock Supply Co announced the opening of a new regional distribution hub, part of a broader push to modernize its logistics operations.",
+        "search_score": 0.8,
+        "published_date": "2026-08-01",
+        "query": "\"Haverstock Supply Co\" expansion OR \"new office\" OR \"new market\"",
+        "category_hint": "company_growth"
+      }
+    ],
+    "extracted_contents": [
+      {
+        "url": "https://www.logisticsdaily.example.com/haverstock-supply-expansion",
+        "success": true,
+        "title": "Haverstock Supply Co opens new distribution hub",
+        "text": "Haverstock Supply Co announced the opening of a new regional distribution hub, part of a broader push to modernize its logistics operations. Director of Operations Marcus Oduya said the expansion reflects growing demand and will require new warehouse management tooling.",
+        "published_at": "2026-08-01",
+        "extraction_method": "trafilatura"
+      }
+    ]
+  },
+
+  "conflicting_job_information": {
+    "search_results": [
+      {
+        "url": "https://www.bizjournal.example.com/fieldglass-robotics-leadership",
+        "title": "Fieldglass Robotics names Priya Chandrasekaran as COO",
+        "snippet": "Fieldglass Robotics has named Priya Chandrasekaran as its new Chief Operating Officer, effective immediately.",
+        "search_score": 0.85,
+        "published_date": "2026-05-10",
+        "query": "\"Priya Chandrasekaran\" \"Fieldglass Robotics\" promoted OR \"new role\" OR appointed",
+        "category_hint": "job_change"
+      },
+      {
+        "url": "https://www.robotindustrynews.example.com/fieldglass-chief-strategy",
+        "title": "Fieldglass Robotics' Chandrasekaran discusses growth as Chief Strategy Officer",
+        "snippet": "In an interview, Priya Chandrasekaran, Chief Strategy Officer at Fieldglass Robotics, discussed the company's plans for international growth.",
+        "search_score": 0.79,
+        "published_date": "2026-05-20",
+        "query": "\"Priya Chandrasekaran\" Fieldglass Robotics interview",
+        "category_hint": "interview"
+      }
+    ],
+    "extracted_contents": [
+      {
+        "url": "https://www.bizjournal.example.com/fieldglass-robotics-leadership",
+        "success": true,
+        "title": "Fieldglass Robotics names Priya Chandrasekaran as COO",
+        "text": "Fieldglass Robotics has named Priya Chandrasekaran as its new Chief Operating Officer, effective immediately. She was appointed Chief Operating Officer after five years leading manufacturing operations.",
+        "published_at": "2026-05-10",
+        "extraction_method": "trafilatura"
+      },
+      {
+        "url": "https://www.robotindustrynews.example.com/fieldglass-chief-strategy",
+        "success": true,
+        "title": "Fieldglass Robotics' Chandrasekaran discusses growth as Chief Strategy Officer",
+        "text": "In an interview, Priya Chandrasekaran, Chief Strategy Officer at Fieldglass Robotics, discussed the company's plans for international growth. She was named Chief Strategy Officer earlier this year.",
+        "published_at": "2026-05-20",
+        "extraction_method": "trafilatura"
+      }
+    ]
+  },
+
+  "outdated_news_only": {
+    "search_results": [
+      {
+        "url": "https://www.timbertradepress.example.com/blackwell-timber-cfo-2021",
+        "title": "Blackwell Timber Holdings appoints Dorian Albescu as CFO",
+        "snippet": "Blackwell Timber Holdings announced the appointment of Dorian Albescu as Chief Financial Officer, effective March 2021.",
+        "search_score": 0.7,
+        "published_date": "2021-03-02",
+        "query": "\"Dorian Albescu\" \"Blackwell Timber Holdings\" promoted OR \"new role\" OR appointed",
+        "category_hint": "job_change"
+      }
+    ],
+    "extracted_contents": [
+      {
+        "url": "https://www.timbertradepress.example.com/blackwell-timber-cfo-2021",
+        "success": true,
+        "title": "Blackwell Timber Holdings appoints Dorian Albescu as CFO",
+        "text": "Blackwell Timber Holdings announced the appointment of Dorian Albescu as Chief Financial Officer, effective March 2021. Albescu previously served as a finance director at a regional lumber cooperative.",
+        "published_at": "2021-03-02",
+        "extraction_method": "trafilatura"
+      }
+    ]
+  },
+
+  "duplicate_search_results": {
+    "search_results": [
+      {
+        "url": "https://www.healthtechwire.example.com/argon-health-ehr-integration",
+        "title": "Argon Health Systems launches new EHR integration suite",
+        "snippet": "Argon Health Systems today launched a new suite of EHR integration tools aimed at reducing clinician administrative burden.",
+        "search_score": 0.86,
+        "published_date": "2026-07-01",
+        "query": "\"Argon Health Systems\" announces OR announcement OR launches",
+        "category_hint": "company_news"
+      },
+      {
+        "url": "https://syndicate.examplenews.com/mirror/argon-health-ehr-integration-2026",
+        "title": "Argon Health Systems launches new EHR integration suite",
+        "snippet": "Argon Health Systems today launched a new suite of EHR integration tools aimed at reducing clinician administrative burden.",
+        "search_score": 0.81,
+        "published_date": "2026-07-01",
+        "query": "\"Argon Health Systems\" announces OR announcement OR launches",
+        "category_hint": "company_news"
+      }
+    ],
+    "extracted_contents": [
+      {
+        "url": "https://www.healthtechwire.example.com/argon-health-ehr-integration",
+        "success": true,
+        "title": "Argon Health Systems launches new EHR integration suite",
+        "text": "Argon Health Systems today launched a new suite of EHR integration tools aimed at reducing clinician administrative burden. CTO Camille Dubois-Renard said the release reflects a year of engineering investment into interoperability.",
+        "published_at": "2026-07-01",
+        "extraction_method": "trafilatura"
+      },
+      {
+        "url": "https://syndicate.examplenews.com/mirror/argon-health-ehr-integration-2026",
+        "success": true,
+        "title": "Argon Health Systems launches new EHR integration suite",
+        "text": "Argon Health Systems today launched a new suite of EHR integration tools aimed at reducing clinician administrative burden. CTO Camille Dubois-Renard said the release reflects a year of engineering investment into interoperability.",
+        "published_at": "2026-07-01",
+        "extraction_method": "trafilatura"
+      }
+    ]
+  }
+}

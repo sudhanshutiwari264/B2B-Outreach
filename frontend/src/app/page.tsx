@@ -1,0 +1,85 @@
+import Link from "next/link";
+import { api } from "@/lib/api";
+import { Card, LinkButton, PageHeader, StatTile } from "@/components/ui";
+import { StatusBadge } from "@/components/StatusBadge";
+
+export default async function DashboardPage() {
+  const [prospects, executions, drafts] = await Promise.all([
+    api.listProspects(500).catch(() => []),
+    api.listExecutions(500).catch(() => []),
+    api.listAllDrafts(500).catch(() => []),
+  ]);
+
+  const prospectById = new Map(prospects.map((p) => [p.id, p]));
+
+  const completed = executions.filter((e) => e.status === "completed").length;
+  const pendingReview = drafts.filter((d) => d.status === "pending_review" || d.status === "draft_generated").length;
+  const approved = drafts.filter((d) => d.status === "approved").length;
+
+  const recentExecutions = [...executions]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 8);
+
+  return (
+    <div>
+      <PageHeader
+        title="Dashboard"
+        description="Overview of activity, key metrics, and recent executions."
+        action={<LinkButton href="/prospects/new">+ New Prospect</LinkButton>}
+      />
+
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <StatTile label="Total Prospects" value={prospects.length} />
+        <StatTile label="Completed" value={completed} />
+        <StatTile label="Pending Review" value={pendingReview} />
+        <StatTile label="Approved" value={approved} />
+      </div>
+
+      <div className="mt-8">
+        <h2 className="mb-3 text-sm font-semibold text-foreground">Recent Executions</h2>
+        <Card>
+          {recentExecutions.length === 0 ? (
+            <div className="px-5 py-8 text-center text-sm text-muted">
+              No executions yet. Start by adding a prospect and running research.
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                  <th className="px-5 py-3 font-medium">Prospect</th>
+                  <th className="px-5 py-3 font-medium">Company</th>
+                  <th className="px-5 py-3 font-medium">Date</th>
+                  <th className="px-5 py-3 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentExecutions.map((execution) => {
+                  const prospect = prospectById.get(execution.prospect_id);
+                  return (
+                    <tr key={execution.id} className="border-b border-border last:border-0">
+                      <td className="px-5 py-3">
+                        <Link
+                          href={`/executions/${execution.id}`}
+                          className="font-medium text-foreground hover:text-accent"
+                        >
+                          {prospect?.name ?? "Unknown prospect"}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3 text-muted">{prospect?.company ?? "—"}</td>
+                      <td className="px-5 py-3 text-muted">
+                        {new Date(execution.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-5 py-3">
+                        <StatusBadge status={execution.status} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}
