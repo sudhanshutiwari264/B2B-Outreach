@@ -9,6 +9,15 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
   );
 }
 
+/** Lets a wide table scroll horizontally on narrow screens instead of crushing columns. */
+export function TableScroll({ children, minWidth = 560 }: { children: ReactNode; minWidth?: number }) {
+  return (
+    <div className="overflow-x-auto">
+      <div style={{ minWidth }}>{children}</div>
+    </div>
+  );
+}
+
 export function PageHeader({
   title,
   description,
@@ -19,12 +28,12 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-6 flex items-start justify-between gap-4">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">{title}</h1>
+    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="min-w-0">
+        <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">{title}</h1>
         {description && <p className="mt-1 text-sm text-muted">{description}</p>}
       </div>
-      {action}
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

@@ -50,7 +50,7 @@ export default function NewProspectPage() {
         description="Enter prospect details and start the AI research workflow."
       />
 
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && <ErrorBanner message={error} />}
 

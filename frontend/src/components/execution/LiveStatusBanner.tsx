@@ -64,7 +64,7 @@ export function LiveStatusBanner({
           style={{ width: `${Math.min(100, (completedCount / totalStages) * 100)}%` }}
         />
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
         <div className="flex items-center gap-3">
           <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />

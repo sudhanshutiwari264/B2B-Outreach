@@ -9,11 +9,11 @@ const NAV_ITEMS = [
   { href: "/executions", label: "Executions", icon: "▶" },
 ];
 
-export function Sidebar() {
+export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col bg-[#0f1115] text-slate-200">
+    <div className="flex h-full flex-col bg-[#0f1115] text-slate-200">
       <div className="flex items-center gap-2 px-5 py-5">
         <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-sm font-semibold text-accent-foreground">
           G
@@ -28,6 +28,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors ${
                 active
                   ? "bg-white/10 font-medium text-white"
@@ -46,6 +47,14 @@ export function Sidebar() {
         <br />
         Intelligence Engine
       </div>
+    </div>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden h-full w-60 shrink-0 md:flex">
+      <SidebarContent />
     </aside>
   );
 }

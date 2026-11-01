@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
-import type { OutreachDraft } from "@/lib/types";
+import type { Execution, OutreachDraft, Signal } from "@/lib/types";
 import { Button, Card, EmptyState, ErrorBanner } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
+import { TERMINAL_EXECUTION_STATUSES } from "@/lib/stages";
 
 const TERMINAL = new Set(["approved", "rejected"]);
 
@@ -137,17 +138,73 @@ function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: Ou
   );
 }
 
-export function OutreachTab({ drafts: initialDrafts }: { drafts: OutreachDraft[] }) {
+function NoDraftNotice({ execution, signals }: { execution: Execution; signals: Signal[] }) {
+  if (!TERMINAL_EXECUTION_STATUSES.has(execution.status)) {
+    return (
+      <EmptyState
+        title="No draft yet"
+        description="Research is still in progress - a draft is generated once a sufficiently strong, evidence-backed signal is found. Check the Overview tab for live status."
+      />
+    );
+  }
+
+  const topSignal = [...signals].sort((a, b) => (b.final_score ?? 0) - (a.final_score ?? 0))[0];
+
+  if (!topSignal) {
+    return (
+      <EmptyState
+        title="No draft was generated"
+        description={
+          execution.failure_reason ??
+          "No usable signals were found for this prospect, so there wasn't enough evidence to draft a personalized message."
+        }
+      />
+    );
+  }
+
+  return (
+    <Card className="p-5">
+      <p className="text-sm font-medium text-foreground">No draft was generated</p>
+      <p className="mt-1 text-sm text-muted">
+        {execution.failure_reason ??
+          "The strongest signal found didn't meet the relevance/evidence bar required for a confident, personalized outreach angle."}
+      </p>
+
+      <div className="mt-4 rounded-md border border-border bg-surface-muted px-4 py-3">
+        <div className="mb-1.5 flex items-center justify-between gap-2">
+          <span className="text-xs font-medium uppercase tracking-wide text-muted">
+            Highest-scoring signal found
+          </span>
+          <div className="flex items-center gap-1.5">
+            {topSignal.relevance_tier && <StatusBadge status={topSignal.relevance_tier} />}
+            <span className="text-sm font-semibold text-foreground">
+              {topSignal.final_score != null ? topSignal.final_score.toFixed(0) : "—"}/100
+            </span>
+          </div>
+        </div>
+        <p className="text-sm text-foreground">{topSignal.description}</p>
+        <blockquote className="mt-2 border-l-2 border-border pl-3 text-xs italic text-muted">
+          &ldquo;{topSignal.evidence_excerpt}&rdquo;
+        </blockquote>
+      </div>
+    </Card>
+  );
+}
+
+export function OutreachTab({
+  drafts: initialDrafts,
+  signals,
+  execution,
+}: {
+  drafts: OutreachDraft[];
+  signals: Signal[];
+  execution: Execution;
+}) {
   const [drafts, setDrafts] = useState(initialDrafts);
   const [activeChannel, setActiveChannel] = useState<"email" | "linkedin">("email");
 
   if (drafts.length === 0) {
-    return (
-      <EmptyState
-        title="No draft yet"
-        description="A draft is generated once a sufficiently strong, evidence-backed signal is selected. If research completed without one, no draft is created."
-      />
-    );
+    return <NoDraftNotice execution={execution} signals={signals} />;
   }
 
   function handleChange(updated: OutreachDraft) {

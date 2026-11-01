@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Sidebar } from "@/components/Sidebar";
+import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,17 +18,19 @@ export const metadata: Metadata = {
   description: "AI-powered B2B research and personalized outreach drafting.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex h-full min-h-screen bg-background text-foreground">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>
-        </main>
+      <body className="h-full min-h-screen bg-background text-foreground">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

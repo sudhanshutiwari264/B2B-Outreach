@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { Card, EmptyState, LinkButton, PageHeader } from "@/components/ui";
+import { Card, EmptyState, LinkButton, PageHeader, TableScroll } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export default async function ExecutionsPage() {
@@ -29,41 +29,46 @@ export default async function ExecutionsPage() {
         />
       ) : (
         <Card>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
-                <th className="px-5 py-3 font-medium">Prospect</th>
-                <th className="px-5 py-3 font-medium">Company</th>
-                <th className="px-5 py-3 font-medium">Started</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((execution) => {
-                const prospect = prospectById.get(execution.prospect_id);
-                return (
-                  <tr key={execution.id} className="border-b border-border last:border-0">
-                    <td className="px-5 py-3 font-medium text-foreground">
-                      {prospect?.name ?? "Unknown prospect"}
-                    </td>
-                    <td className="px-5 py-3 text-muted">{prospect?.company ?? "—"}</td>
-                    <td className="px-5 py-3 text-muted">
-                      {new Date(execution.created_at).toLocaleString()}
-                    </td>
-                    <td className="px-5 py-3">
-                      <StatusBadge status={execution.status} />
-                    </td>
-                    <td className="px-5 py-3 text-right">
-                      <Link href={`/executions/${execution.id}`} className="text-sm font-medium text-accent hover:underline">
-                        View Details
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <TableScroll minWidth={640}>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                  <th className="px-4 py-3 font-medium sm:px-5">Prospect</th>
+                  <th className="px-4 py-3 font-medium sm:px-5">Company</th>
+                  <th className="px-4 py-3 font-medium sm:px-5">Started</th>
+                  <th className="px-4 py-3 font-medium sm:px-5">Status</th>
+                  <th className="px-4 py-3 font-medium sm:px-5"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((execution) => {
+                  const prospect = prospectById.get(execution.prospect_id);
+                  return (
+                    <tr key={execution.id} className="border-b border-border last:border-0">
+                      <td className="px-4 py-3 font-medium text-foreground sm:px-5">
+                        {prospect?.name ?? "Unknown prospect"}
+                      </td>
+                      <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "—"}</td>
+                      <td className="px-4 py-3 text-muted sm:px-5">
+                        {new Date(execution.created_at).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3 sm:px-5">
+                        <StatusBadge status={execution.status} />
+                      </td>
+                      <td className="px-4 py-3 text-right sm:px-5">
+                        <Link
+                          href={`/executions/${execution.id}`}
+                          className="text-sm font-medium text-accent hover:underline"
+                        >
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </TableScroll>
         </Card>
       )}
     </div>

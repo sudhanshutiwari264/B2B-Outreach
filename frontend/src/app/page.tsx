@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { Card, LinkButton, PageHeader, StatTile } from "@/components/ui";
+import { Card, LinkButton, PageHeader, StatTile, TableScroll } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export default async function DashboardPage() {
@@ -43,40 +43,42 @@ export default async function DashboardPage() {
               No executions yet. Start by adding a prospect and running research.
             </div>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
-                  <th className="px-5 py-3 font-medium">Prospect</th>
-                  <th className="px-5 py-3 font-medium">Company</th>
-                  <th className="px-5 py-3 font-medium">Date</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentExecutions.map((execution) => {
-                  const prospect = prospectById.get(execution.prospect_id);
-                  return (
-                    <tr key={execution.id} className="border-b border-border last:border-0">
-                      <td className="px-5 py-3">
-                        <Link
-                          href={`/executions/${execution.id}`}
-                          className="font-medium text-foreground hover:text-accent"
-                        >
-                          {prospect?.name ?? "Unknown prospect"}
-                        </Link>
-                      </td>
-                      <td className="px-5 py-3 text-muted">{prospect?.company ?? "—"}</td>
-                      <td className="px-5 py-3 text-muted">
-                        {new Date(execution.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-5 py-3">
-                        <StatusBadge status={execution.status} />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <TableScroll>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                    <th className="px-4 py-3 font-medium sm:px-5">Prospect</th>
+                    <th className="px-4 py-3 font-medium sm:px-5">Company</th>
+                    <th className="px-4 py-3 font-medium sm:px-5">Date</th>
+                    <th className="px-4 py-3 font-medium sm:px-5">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentExecutions.map((execution) => {
+                    const prospect = prospectById.get(execution.prospect_id);
+                    return (
+                      <tr key={execution.id} className="border-b border-border last:border-0">
+                        <td className="px-4 py-3 sm:px-5">
+                          <Link
+                            href={`/executions/${execution.id}`}
+                            className="font-medium text-foreground hover:text-accent"
+                          >
+                            {prospect?.name ?? "Unknown prospect"}
+                          </Link>
+                        </td>
+                        <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "—"}</td>
+                        <td className="px-4 py-3 text-muted sm:px-5">
+                          {new Date(execution.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-3 sm:px-5">
+                          <StatusBadge status={execution.status} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </TableScroll>
           )}
         </Card>
       </div>

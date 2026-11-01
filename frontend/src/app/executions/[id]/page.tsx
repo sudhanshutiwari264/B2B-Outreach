@@ -51,11 +51,11 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
       </div>
 
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">
+        <div className="min-w-0">
+          <h1 className="truncate text-lg font-semibold tracking-tight text-foreground sm:text-xl">
             {prospect ? `${prospect.name} — ${prospect.company}` : "Execution"}
           </h1>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 truncate text-xs text-muted">
             Execution ID: {execution.id}
             {execution.started_at && execution.completed_at && (
               <>
@@ -78,26 +78,28 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
         signalCount={signals.length}
       />
 
-      <div className="mb-6 flex gap-1 border-b border-border">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors ${
-              tab === t.key
-                ? "border-accent text-accent"
-                : "border-transparent text-muted hover:text-foreground"
-            }`}
-          >
-            {t.label}
-            {t.key === "sources" && sources.length > 0 && (
-              <span className="ml-1.5 text-xs text-muted">({sources.length})</span>
-            )}
-            {t.key === "signals" && signals.length > 0 && (
-              <span className="ml-1.5 text-xs text-muted">({signals.length})</span>
-            )}
-          </button>
-        ))}
+      <div className="mb-6 overflow-x-auto border-b border-border">
+        <div className="flex gap-1">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`shrink-0 whitespace-nowrap border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors ${
+                tab === t.key
+                  ? "border-accent text-accent"
+                  : "border-transparent text-muted hover:text-foreground"
+              }`}
+            >
+              {t.label}
+              {t.key === "sources" && sources.length > 0 && (
+                <span className="ml-1.5 text-xs text-muted">({sources.length})</span>
+              )}
+              {t.key === "signals" && signals.length > 0 && (
+                <span className="ml-1.5 text-xs text-muted">({signals.length})</span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {tab === "overview" && (
@@ -105,7 +107,7 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
       )}
       {tab === "sources" && <SourcesTab sources={sources} />}
       {tab === "signals" && <SignalsTab signals={signals} />}
-      {tab === "outreach" && <OutreachTab drafts={drafts} />}
+      {tab === "outreach" && <OutreachTab drafts={drafts} signals={signals} execution={execution} />}
     </div>
   );
 }
