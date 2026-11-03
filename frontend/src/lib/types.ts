@@ -162,6 +162,8 @@ export interface OutreachDraft {
   } | null;
   status: DraftStatus;
   reviewer_notes: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface HealthIntegrations {

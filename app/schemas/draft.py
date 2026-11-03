@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -39,6 +40,8 @@ class DraftRead(BaseModel):
     validation_report: Optional[dict]
     status: DraftStatus
     reviewer_notes: Optional[str]
+    created_at: datetime
+    updated_at: datetime
 
 
 class DraftEditRequest(BaseModel):

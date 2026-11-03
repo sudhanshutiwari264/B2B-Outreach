@@ -84,13 +84,33 @@ export function LinkButton({
   );
 }
 
-export function StatTile({ label, value }: { label: string; value: string | number }) {
-  return (
-    <Card className="px-4 py-3.5">
+export function StatTile({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value: string | number;
+  href?: string;
+}) {
+  const inner = (
+    <>
       <div className="text-2xl font-semibold tracking-tight text-foreground">{value}</div>
       <div className="mt-0.5 text-xs text-muted">{label}</div>
-    </Card>
+    </>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        <Card className="px-4 py-3.5 transition-colors hover:border-accent/50 hover:bg-surface-muted">
+          {inner}
+        </Card>
+      </Link>
+    );
+  }
+
+  return <Card className="px-4 py-3.5">{inner}</Card>;
 }
 
 export function EmptyState({ title, description }: { title: string; description?: string }) {

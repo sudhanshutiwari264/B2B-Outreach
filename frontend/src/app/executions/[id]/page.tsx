@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useExecutionData } from "@/lib/useExecutionData";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ErrorBanner, Spinner } from "@/components/ui";
@@ -20,10 +21,16 @@ const TABS = [
 
 type TabKey = (typeof TABS)[number]["key"];
 
+function isTabKey(value: string | null): value is TabKey {
+  return TABS.some((t) => t.key === value);
+}
+
 export default function ExecutionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { execution, prospect, logs, sources, signals, drafts, loading, error } = useExecutionData(id);
-  const [tab, setTab] = useState<TabKey>("overview");
+  const searchParams = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const [tab, setTab] = useState<TabKey>(isTabKey(requestedTab) ? requestedTab : "overview");
 
   if (loading && !execution) {
     return (

@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useNeedsReviewCount } from "@/lib/useNeedsReviewCount";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: "▣" },
   { href: "/prospects/new", label: "New Prospect", icon: "➕" },
   { href: "/executions", label: "Executions", icon: "▶" },
-];
+  { href: "/outreach", label: "Outreach", icon: "✉" },
+] as const;
 
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const needsReviewCount = useNeedsReviewCount();
 
   return (
     <div className="flex h-full flex-col bg-[#0f1115] text-slate-200">
@@ -24,6 +27,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <nav className="flex-1 space-y-1 px-3 py-2">
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname?.startsWith(item.href);
+          const showBadge = item.href === "/outreach" && !!needsReviewCount;
           return (
             <Link
               key={item.href}
@@ -36,7 +40,12 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               }`}
             >
               <span className="text-xs opacity-80">{item.icon}</span>
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {showBadge && (
+                <span className="rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold leading-none text-accent-foreground">
+                  {needsReviewCount}
+                </span>
+              )}
             </Link>
           );
         })}
