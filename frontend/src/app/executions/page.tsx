@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { ChevronRight, PlayCircle, UserPlus } from "lucide-react";
 import { api } from "@/lib/api";
 import { Card, EmptyState, LinkButton, PageHeader, TableScroll } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Avatar } from "@/components/Avatar";
 
 export default async function ExecutionsPage() {
   const [prospects, executions] = await Promise.all([
@@ -19,13 +21,19 @@ export default async function ExecutionsPage() {
       <PageHeader
         title="Execution History"
         description="Track all past research executions, statuses, and outcomes."
-        action={<LinkButton href="/prospects/new">+ New Prospect</LinkButton>}
+        icon={PlayCircle}
+        action={
+          <LinkButton href="/prospects/new">
+            <UserPlus className="h-4 w-4" /> New Prospect
+          </LinkButton>
+        }
       />
 
       {sorted.length === 0 ? (
         <EmptyState
           title="No executions yet"
           description="Add a prospect and start a research run to see it here."
+          icon={PlayCircle}
         />
       ) : (
         <Card>
@@ -44,9 +52,15 @@ export default async function ExecutionsPage() {
                 {sorted.map((execution) => {
                   const prospect = prospectById.get(execution.prospect_id);
                   return (
-                    <tr key={execution.id} className="border-b border-border last:border-0">
-                      <td className="px-4 py-3 font-medium text-foreground sm:px-5">
-                        {prospect?.name ?? "Unknown prospect"}
+                    <tr
+                      key={execution.id}
+                      className="border-b border-border transition-colors last:border-0 hover:bg-surface-muted/60"
+                    >
+                      <td className="px-4 py-3 sm:px-5">
+                        <div className="flex items-center gap-2.5 font-medium text-foreground">
+                          <Avatar name={prospect?.name ?? "?"} size="sm" />
+                          {prospect?.name ?? "Unknown prospect"}
+                        </div>
                       </td>
                       <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "—"}</td>
                       <td className="px-4 py-3 text-muted sm:px-5">
@@ -58,9 +72,9 @@ export default async function ExecutionsPage() {
                       <td className="px-4 py-3 text-right sm:px-5">
                         <Link
                           href={`/executions/${execution.id}`}
-                          className="text-sm font-medium text-accent hover:underline"
+                          className="inline-flex items-center gap-0.5 text-sm font-medium text-accent hover:underline"
                         >
-                          View Details
+                          View Details <ChevronRight className="h-3.5 w-3.5" />
                         </Link>
                       </td>
                     </tr>

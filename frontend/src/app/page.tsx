@@ -1,7 +1,18 @@
 import Link from "next/link";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  LayoutDashboard,
+  Mail,
+  MessageSquare,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { api } from "@/lib/api";
-import { Card, LinkButton, PageHeader, StatTile, TableScroll } from "@/components/ui";
+import { Card, EmptyState, LinkButton, PageHeader, StatTile, TableScroll } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Avatar } from "@/components/Avatar";
 
 const NEEDS_REVIEW_STATUSES = new Set(["draft_generated", "pending_review", "edited"]);
 
@@ -32,22 +43,35 @@ export default async function DashboardPage() {
       <PageHeader
         title="Dashboard"
         description="Overview of activity, key metrics, and recent executions."
-        action={<LinkButton href="/prospects/new">+ New Prospect</LinkButton>}
+        icon={LayoutDashboard}
+        action={
+          <LinkButton href="/prospects/new">
+            <UserPlus className="h-4 w-4" /> New Prospect
+          </LinkButton>
+        }
       />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatTile label="Total Prospects" value={prospects.length} />
-        <StatTile label="Completed" value={completed} href="/executions" />
-        <StatTile label="Pending Review" value={needsReview.length} href="/outreach?filter=needs_review" />
-        <StatTile label="Approved" value={approved} href="/outreach?filter=approved" />
+        <StatTile label="Total Prospects" value={prospects.length} icon={Users} />
+        <StatTile label="Completed" value={completed} href="/executions" icon={CheckCircle2} />
+        <StatTile
+          label="Pending Review"
+          value={needsReview.length}
+          href="/outreach?filter=needs_review"
+          icon={Clock}
+        />
+        <StatTile label="Approved" value={approved} href="/outreach?filter=approved" icon={CheckCircle2} />
       </div>
 
       {needsReviewPreview.length > 0 && (
         <div className="mt-8">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">Needs Your Review</h2>
-            <Link href="/outreach" className="text-xs font-medium text-accent hover:underline">
-              View all ({needsReview.length})
+            <Link
+              href="/outreach"
+              className="flex items-center gap-1 text-xs font-medium text-accent hover:underline"
+            >
+              View all ({needsReview.length}) <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           <div className="space-y-2.5">
@@ -57,19 +81,31 @@ export default async function DashboardPage() {
               const body = draft.edited_body ?? draft.body;
               return (
                 <Link key={draft.id} href={`/executions/${draft.execution_id}?tab=outreach`}>
-                  <Card className="px-4 py-3.5 transition-colors hover:border-accent/50 hover:bg-surface-muted sm:px-5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-foreground">
-                        {prospect?.name ?? "Unknown prospect"}
-                      </span>
-                      {prospect?.company && <span className="text-sm text-muted">— {prospect.company}</span>}
-                      <span className="text-xs text-muted">
-                        {draft.channel === "email" ? "✉ Email" : "in LinkedIn"}
-                      </span>
+                  <Card hover className="px-4 py-3.5 hover:border-accent/40 sm:px-5">
+                    <div className="flex items-start gap-3">
+                      <Avatar name={prospect?.name ?? "?"} />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-medium text-foreground">
+                            {prospect?.name ?? "Unknown prospect"}
+                          </span>
+                          {prospect?.company && (
+                            <span className="text-sm text-muted">— {prospect.company}</span>
+                          )}
+                          <span className="flex items-center gap-1 text-xs text-muted">
+                            {draft.channel === "email" ? (
+                              <Mail className="h-3 w-3" />
+                            ) : (
+                              <MessageSquare className="h-3 w-3" />
+                            )}
+                            {draft.channel}
+                          </span>
+                        </div>
+                        <p className="mt-1 truncate text-sm text-muted">
+                          {draft.subject ?? body.slice(0, 120)}
+                        </p>
+                      </div>
                     </div>
-                    <p className="mt-1 truncate text-sm text-muted">
-                      {draft.subject ?? body.slice(0, 120)}
-                    </p>
                   </Card>
                 </Link>
               );
@@ -80,12 +116,14 @@ export default async function DashboardPage() {
 
       <div className="mt-8">
         <h2 className="mb-3 text-sm font-semibold text-foreground">Recent Executions</h2>
-        <Card>
-          {recentExecutions.length === 0 ? (
-            <div className="px-5 py-8 text-center text-sm text-muted">
-              No executions yet. Start by adding a prospect and running research.
-            </div>
-          ) : (
+        {recentExecutions.length === 0 ? (
+          <EmptyState
+            title="No executions yet"
+            description="Start by adding a prospect and running research."
+            icon={LayoutDashboard}
+          />
+        ) : (
+          <Card>
             <TableScroll>
               <table className="w-full text-sm">
                 <thead>
@@ -100,12 +138,16 @@ export default async function DashboardPage() {
                   {recentExecutions.map((execution) => {
                     const prospect = prospectById.get(execution.prospect_id);
                     return (
-                      <tr key={execution.id} className="border-b border-border last:border-0">
+                      <tr
+                        key={execution.id}
+                        className="border-b border-border transition-colors last:border-0 hover:bg-surface-muted/60"
+                      >
                         <td className="px-4 py-3 sm:px-5">
                           <Link
                             href={`/executions/${execution.id}`}
-                            className="font-medium text-foreground hover:text-accent"
+                            className="flex items-center gap-2.5 font-medium text-foreground hover:text-accent"
                           >
+                            <Avatar name={prospect?.name ?? "?"} size="sm" />
                             {prospect?.name ?? "Unknown prospect"}
                           </Link>
                         </td>
@@ -122,8 +164,8 @@ export default async function DashboardPage() {
                 </tbody>
               </table>
             </TableScroll>
-          )}
-        </Card>
+          </Card>
+        )}
       </div>
     </div>
   );

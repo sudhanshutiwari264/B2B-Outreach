@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Clock, Globe, Zap } from "lucide-react";
 import { WORKFLOW_STAGES, TERMINAL_EXECUTION_STATUSES } from "@/lib/stages";
 import { DEFAULT_MESSAGES, STAGE_MESSAGES } from "@/lib/stageMessages";
 import type { Execution, ExecutionLog } from "@/lib/types";
@@ -55,13 +56,14 @@ export function LiveStatusBanner({
 
   const completedCount = logs.filter((l) => l.status === "success").length;
   const totalStages = WORKFLOW_STAGES.length;
+  const progressPct = Math.min(100, (completedCount / totalStages) * 100);
 
   return (
-    <div className="mb-6 overflow-hidden rounded-xl border border-accent/30 bg-accent-soft">
+    <div className="mb-6 overflow-hidden rounded-xl border border-accent/25 bg-gradient-to-br from-accent-soft to-surface shadow-[var(--shadow-sm)]">
       <div className="h-1 w-full bg-surface-muted">
         <div
-          className="h-full bg-accent transition-all duration-700 ease-out"
-          style={{ width: `${Math.min(100, (completedCount / totalStages) * 100)}%` }}
+          className="h-full bg-gradient-to-r from-accent to-indigo-400 transition-all duration-700 ease-out"
+          style={{ width: `${progressPct}%` }}
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
@@ -78,13 +80,18 @@ export function LiveStatusBanner({
           </div>
         </div>
         <div className="flex items-center gap-4 text-xs text-muted">
-          <span>
+          <span className="flex items-center gap-1.5">
+            <Globe className="h-3.5 w-3.5" />
             <span className="font-semibold text-foreground">{sourceCount}</span> sources
           </span>
-          <span>
+          <span className="flex items-center gap-1.5">
+            <Zap className="h-3.5 w-3.5" />
             <span className="font-semibold text-foreground">{signalCount}</span> signals
           </span>
-          <span className="font-mono tabular-nums">{elapsed} elapsed</span>
+          <span className="flex items-center gap-1.5 font-mono tabular-nums">
+            <Clock className="h-3.5 w-3.5" />
+            {elapsed}
+          </span>
         </div>
       </div>
     </div>

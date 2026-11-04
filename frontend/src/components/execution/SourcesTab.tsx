@@ -1,10 +1,17 @@
+import { ExternalLink, Globe } from "lucide-react";
 import type { ResearchSource } from "@/lib/types";
 import { Card, EmptyState, TableScroll } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export function SourcesTab({ sources }: { sources: ResearchSource[] }) {
   if (sources.length === 0) {
-    return <EmptyState title="No sources yet" description="Sources will appear here once research discovery completes." />;
+    return (
+      <EmptyState
+        title="No sources yet"
+        description="Sources will appear here once research discovery completes."
+        icon={Globe}
+      />
+    );
   }
 
   return (
@@ -21,15 +28,19 @@ export function SourcesTab({ sources }: { sources: ResearchSource[] }) {
           </thead>
           <tbody>
             {sources.map((s) => (
-              <tr key={s.id} className="border-b border-border last:border-0 align-top">
+              <tr
+                key={s.id}
+                className="border-b border-border align-top transition-colors last:border-0 hover:bg-surface-muted/60"
+              >
                 <td className="max-w-md px-4 py-3 sm:px-5">
                   <a
                     href={s.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium text-accent hover:underline"
+                    className="group flex items-center gap-1.5 font-medium text-accent hover:underline"
                   >
-                    {s.title || s.domain || s.url}
+                    <span className="truncate">{s.title || s.domain || s.url}</span>
+                    <ExternalLink className="h-3 w-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
                   </a>
                   <div className="mt-0.5 truncate text-xs text-muted">{s.domain ?? s.url}</div>
                 </td>

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Play, Search, Users } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { Prospect } from "@/lib/types";
 import { Card, EmptyState, ErrorBanner, TableScroll } from "@/components/ui";
+import { Avatar } from "@/components/Avatar";
 
 export interface ProspectRow {
   prospect: Prospect;
@@ -37,12 +39,15 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
 
   return (
     <div>
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search by name, company, or title…"
-        className="mb-4 w-full max-w-sm rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-      />
+      <div className="relative mb-4 max-w-sm">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by name, company, or title…"
+          className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
+        />
+      </div>
 
       {error && (
         <div className="mb-4">
@@ -58,6 +63,7 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
               ? "Add your first prospect to start researching."
               : "Try a different search term."
           }
+          icon={Users}
         />
       ) : (
         <Card>
@@ -74,12 +80,16 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
               </thead>
               <tbody>
                 {filtered.map(({ prospect, executionCount }) => (
-                  <tr key={prospect.id} className="border-b border-border last:border-0">
+                  <tr
+                    key={prospect.id}
+                    className="border-b border-border transition-colors last:border-0 hover:bg-surface-muted/60"
+                  >
                     <td className="px-4 py-3 sm:px-5">
                       <Link
                         href={`/prospects/${prospect.id}`}
-                        className="font-medium text-foreground hover:text-accent"
+                        className="flex items-center gap-2.5 font-medium text-foreground hover:text-accent"
                       >
+                        <Avatar name={prospect.name} size="sm" />
                         {prospect.name}
                       </Link>
                     </td>
@@ -90,8 +100,9 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
                       <button
                         onClick={() => handleRunResearch(prospect.id)}
                         disabled={runningId === prospect.id}
-                        className="text-sm font-medium text-accent hover:underline disabled:opacity-50"
+                        className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline disabled:opacity-50"
                       >
+                        <Play className="h-3.5 w-3.5" />
                         {runningId === prospect.id ? "Starting…" : "Run Research"}
                       </button>
                     </td>

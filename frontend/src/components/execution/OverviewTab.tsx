@@ -1,3 +1,14 @@
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Circle,
+  ExternalLink,
+  Globe,
+  Loader2,
+  type LucideIcon,
+  Sparkles,
+  XCircle,
+} from "lucide-react";
 import { WORKFLOW_STAGES, TERMINAL_EXECUTION_STATUSES } from "@/lib/stages";
 import type { Execution, ExecutionLog, ResearchSource, Signal } from "@/lib/types";
 import { Card } from "@/components/ui";
@@ -24,13 +35,19 @@ function computeStageStates(
 }
 
 function StageIcon({ state }: { state: StageState }) {
-  if (state === "done") return <span className="text-success">✓</span>;
-  if (state === "failed") return <span className="text-danger">✕</span>;
-  if (state === "running")
-    return (
-      <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-    );
-  return <span className="text-muted">○</span>;
+  if (state === "done") return <CheckCircle2 className="h-4 w-4 text-success" strokeWidth={2} />;
+  if (state === "failed") return <XCircle className="h-4 w-4 text-danger" strokeWidth={2} />;
+  if (state === "running") return <Loader2 className="h-4 w-4 animate-spin text-accent" strokeWidth={2} />;
+  return <Circle className="h-4 w-4 text-muted" strokeWidth={1.75} />;
+}
+
+function SectionTitle({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
+  return (
+    <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+      <Icon className="h-4 w-4 text-muted" strokeWidth={2} />
+      {children}
+    </h3>
+  );
 }
 
 export function OverviewTab({
@@ -63,7 +80,7 @@ export function OverviewTab({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <Card className="p-5">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-foreground">Research Progress</h3>
+          <SectionTitle icon={CheckCircle2}>Research Progress</SectionTitle>
           {isRunning && (
             <span className="flex items-center gap-1.5 text-xs font-medium text-info">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-info" /> Live
@@ -84,33 +101,35 @@ export function OverviewTab({
 
       <div className="space-y-6">
         <Card className="p-5">
-          <h3 className="mb-3 text-sm font-semibold text-foreground">Key Findings</h3>
+          <SectionTitle icon={Sparkles}>Key Findings</SectionTitle>
           {topSignals.length === 0 ? (
             <p className="text-sm text-muted">No signals extracted yet.</p>
           ) : (
-            <ul className="space-y-2 text-sm text-foreground">
+            <ul className="space-y-2.5 text-sm text-foreground">
               {topSignals.map((s) => (
                 <li key={s.id} className="flex gap-2">
-                  <span className="mt-0.5 text-accent">•</span>
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
                   <span>{s.description}</span>
                 </li>
               ))}
             </ul>
           )}
           {summary && typeof summary.conflicts_found === "number" && (summary.conflicts_found as number) > 0 && (
-            <p className="mt-3 rounded-md bg-warning-soft px-3 py-2 text-xs text-warning">
+            <p className="mt-3 flex items-start gap-2 rounded-lg bg-warning-soft px-3 py-2.5 text-xs text-warning">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               {summary.conflicts_found as number} conflicting claim(s) detected and excluded from outreach.
             </p>
           )}
           {execution.failure_reason && (
-            <p className="mt-3 rounded-md bg-danger-soft px-3 py-2 text-xs text-danger">
+            <p className="mt-3 flex items-start gap-2 rounded-lg bg-danger-soft px-3 py-2.5 text-xs text-danger">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               {execution.failure_reason}
             </p>
           )}
         </Card>
 
         <Card className="p-5">
-          <h3 className="mb-3 text-sm font-semibold text-foreground">Top Sources</h3>
+          <SectionTitle icon={Globe}>Top Sources</SectionTitle>
           {topSources.length === 0 ? (
             <p className="text-sm text-muted">No sources extracted yet.</p>
           ) : (
@@ -121,9 +140,10 @@ export function OverviewTab({
                     href={s.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm font-medium text-accent hover:underline"
+                    className="group flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
                   >
-                    {s.title || s.domain || s.url}
+                    <span className="truncate">{s.title || s.domain || s.url}</span>
+                    <ExternalLink className="h-3 w-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
                   </a>
                 </li>
               ))}

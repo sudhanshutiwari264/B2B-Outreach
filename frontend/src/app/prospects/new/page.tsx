@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Play, UserPlus } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { OutreachChannel } from "@/lib/types";
 import { Button, Card, ErrorBanner, PageHeader } from "@/components/ui";
@@ -48,6 +49,7 @@ export default function NewProspectPage() {
       <PageHeader
         title="Add New Prospect"
         description="Enter prospect details and start the AI research workflow."
+        icon={UserPlus}
       />
 
       <Card className="p-4 sm:p-6">
@@ -137,8 +139,9 @@ export default function NewProspectPage() {
             />
           </Field>
 
-          <Button type="submit" disabled={submitting} className="w-full">
-            {submitting ? "Starting research…" : "▶ Start Research"}
+          <Button type="submit" loading={submitting} className="w-full">
+            {!submitting && <Play className="h-4 w-4" />}
+            {submitting ? "Starting research…" : "Start Research"}
           </Button>
         </form>
       </Card>
@@ -147,7 +150,7 @@ export default function NewProspectPage() {
 }
 
 const inputClass =
-  "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent";
+  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent";
 
 function Field({
   label,

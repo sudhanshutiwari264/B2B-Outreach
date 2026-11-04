@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { CheckCircle2, Inbox, Mail, MessageSquare, XCircle } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { OutreachDraft } from "@/lib/types";
 import { Button, Card, EmptyState, ErrorBanner } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Avatar } from "@/components/Avatar";
 
 export interface QueueItem {
   draft: OutreachDraft;
@@ -33,10 +35,6 @@ function matchesFilter(status: string, filter: FilterKey): boolean {
   if (filter === "all") return true;
   if (filter === "needs_review") return NEEDS_REVIEW_STATUSES.has(status);
   return status === filter;
-}
-
-function channelLabel(channel: string): string {
-  return channel === "email" ? "✉ Email" : "in LinkedIn";
 }
 
 function QueueRow({
@@ -66,50 +64,55 @@ function QueueRow({
   }
 
   return (
-    <Card className="p-4 sm:p-5">
+    <Card hover className="p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href={`/executions/${draft.execution_id}?tab=outreach`}
-              className="font-medium text-foreground hover:text-accent"
-            >
-              {prospectName}
-            </Link>
-            {prospectCompany && <span className="text-sm text-muted">— {prospectCompany}</span>}
-            <StatusBadge status={draft.status} />
-            <span className="text-xs text-muted">{channelLabel(draft.channel)}</span>
-          </div>
-          {draft.channel === "email" && draft.subject && (
-            <p className="mt-1.5 text-sm font-medium text-foreground">{draft.subject}</p>
-          )}
-          <p className="mt-1 text-sm text-muted">{preview}</p>
-          {error && (
-            <div className="mt-2">
-              <ErrorBanner message={error} />
+        <div className="flex min-w-0 flex-1 gap-3">
+          <Avatar name={prospectName} />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href={`/executions/${draft.execution_id}?tab=outreach`}
+                className="font-medium text-foreground hover:text-accent"
+              >
+                {prospectName}
+              </Link>
+              {prospectCompany && <span className="text-sm text-muted">— {prospectCompany}</span>}
+              <StatusBadge status={draft.status} />
+              <span className="flex items-center gap-1 text-xs text-muted">
+                {draft.channel === "email" ? (
+                  <Mail className="h-3 w-3" />
+                ) : (
+                  <MessageSquare className="h-3 w-3" />
+                )}
+                {draft.channel}
+              </span>
             </div>
-          )}
+            {draft.channel === "email" && draft.subject && (
+              <p className="mt-1.5 text-sm font-medium text-foreground">{draft.subject}</p>
+            )}
+            <p className="mt-1 text-sm text-muted">{preview}</p>
+            {error && (
+              <div className="mt-2">
+                <ErrorBanner message={error} />
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex shrink-0 flex-wrap gap-2">
           <Link
             href={`/executions/${draft.execution_id}?tab=outreach`}
-            className="inline-flex items-center justify-center rounded-md border border-border bg-surface px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-surface-muted"
+            className="inline-flex items-center justify-center rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-xs)] transition-colors hover:bg-surface-muted"
           >
             Open
           </Link>
           {!isTerminal && (
             <>
-              <Button
-                variant="primary"
-                className="!bg-success"
-                disabled={busy}
-                onClick={() => run(() => api.approveDraft(draft.id))}
-              >
-                ✓ Approve
+              <Button variant="success" loading={busy} onClick={() => run(() => api.approveDraft(draft.id))}>
+                <CheckCircle2 className="h-3.5 w-3.5" /> Approve
               </Button>
               <Button variant="danger" disabled={busy} onClick={() => run(() => api.rejectDraft(draft.id))}>
-                ✕ Reject
+                <XCircle className="h-3.5 w-3.5" /> Reject
               </Button>
             </>
           )}
@@ -136,13 +139,15 @@ export function OutreachQueue({ items: initialItems }: { items: QueueItem[] }) {
 
   return (
     <div>
-      <div className="mb-5 flex gap-1 overflow-x-auto rounded-lg bg-surface-muted p-1 w-fit">
+      <div className="mb-5 flex w-fit gap-1 overflow-x-auto rounded-lg bg-surface-muted p-1">
         {FILTERS.map((f) => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
             className={`shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors ${
-              filter === f.key ? "bg-surface text-foreground shadow-sm" : "text-muted hover:text-foreground"
+              filter === f.key
+                ? "bg-surface text-foreground shadow-[var(--shadow-xs)]"
+                : "text-muted hover:text-foreground"
             }`}
           >
             {f.label}
@@ -161,6 +166,7 @@ export function OutreachQueue({ items: initialItems }: { items: QueueItem[] }) {
               ? "Every generated draft has been reviewed. New ones will show up here as research completes."
               : "Switch filters to see drafts in other states."
           }
+          icon={filter === "needs_review" ? CheckCircle2 : Inbox}
         />
       ) : (
         <div className="space-y-3">

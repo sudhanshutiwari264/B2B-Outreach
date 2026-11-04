@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Mail } from "lucide-react";
 import { api } from "@/lib/api";
 import { PageHeader, Spinner } from "@/components/ui";
 import { OutreachQueue, type QueueItem } from "@/components/outreach/OutreachQueue";
@@ -28,6 +29,7 @@ export default async function OutreachQueuePage() {
       <PageHeader
         title="Outreach"
         description="Every generated message in one place — review, approve, or reject without digging through executions."
+        icon={Mail}
       />
       <Suspense fallback={<Spinner />}>
         <OutreachQueue items={items} />

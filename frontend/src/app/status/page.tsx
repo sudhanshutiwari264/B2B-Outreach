@@ -1,39 +1,41 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Activity, Bot, Database, type LucideIcon, RefreshCw, Search } from "lucide-react";
 import { api } from "@/lib/api";
 import type { HealthIntegrations } from "@/lib/types";
-import { Button, Card, PageHeader, Spinner } from "@/components/ui";
+import { Button, Card, ErrorBanner, PageHeader } from "@/components/ui";
 
 type CheckState = "checking" | "ok" | "degraded" | "down";
 
-function StatusDot({ state }: { state: CheckState }) {
-  const color =
-    state === "ok"
-      ? "bg-success"
-      : state === "degraded"
-        ? "bg-warning"
-        : state === "down"
-          ? "bg-danger"
-          : "bg-muted";
-  return <span className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${color}`} />;
-}
+const STATE_STYLES: Record<CheckState, { dot: string; text: string }> = {
+  checking: { dot: "bg-muted", text: "text-muted" },
+  ok: { dot: "bg-success", text: "text-success" },
+  degraded: { dot: "bg-warning", text: "text-warning" },
+  down: { dot: "bg-danger", text: "text-danger" },
+};
 
 function StatusCard({
   title,
+  icon: Icon,
   state,
   details,
 }: {
   title: string;
+  icon: LucideIcon;
   state: CheckState;
   details: { label: string; value: string }[];
 }) {
+  const style = STATE_STYLES[state];
   return (
     <Card className="p-5">
       <div className="mb-3 flex items-center gap-2.5">
-        <StatusDot state={state} />
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-muted text-muted">
+          <Icon className="h-4 w-4" strokeWidth={2} />
+        </div>
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-        <span className="ml-auto text-xs font-medium uppercase tracking-wide text-muted">
+        <span className={`ml-auto flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide ${style.text}`}>
+          <span className={`h-1.5 w-1.5 rounded-full ${style.dot} ${state === "checking" ? "animate-pulse" : ""}`} />
           {state === "checking" ? "Checking…" : state}
         </span>
       </div>
@@ -102,27 +104,30 @@ export default function StatusPage() {
       <PageHeader
         title="System Status"
         description="Live connectivity to the database, Tavily, and Tarqa AI."
+        icon={Activity}
         action={
-          <Button variant="secondary" onClick={refresh} disabled={loading}>
-            {loading ? <Spinner /> : "↻"} Refresh
+          <Button variant="secondary" onClick={refresh} loading={loading}>
+            {!loading && <RefreshCw className="h-3.5 w-3.5" />} Refresh
           </Button>
         }
       />
 
       {apiError && (
-        <Card className="mb-6 border-danger/30 bg-danger-soft p-4">
-          <p className="text-sm text-danger">{apiError}</p>
-        </Card>
+        <div className="mb-6">
+          <ErrorBanner message={apiError} />
+        </div>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatusCard
           title="Backend / Database"
+          icon={Database}
           state={backendState}
           details={[{ label: "Postgres", value: dbOk == null ? "unknown" : dbOk ? "connected" : "unreachable" }]}
         />
         <StatusCard
           title="Tavily"
+          icon={Search}
           state={tavilyState}
           details={[
             { label: "Configured", value: integrations ? String(integrations.tavily.configured) : "…" },
@@ -132,6 +137,7 @@ export default function StatusPage() {
         />
         <StatusCard
           title="Tarqa AI"
+          icon={Bot}
           state={tarqaState}
           details={[
             { label: "Configured", value: integrations ? String(integrations.tarqa.configured) : "…" },

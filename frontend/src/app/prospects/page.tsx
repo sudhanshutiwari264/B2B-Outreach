@@ -1,3 +1,4 @@
+import { UserPlus, Users } from "lucide-react";
 import { api } from "@/lib/api";
 import { LinkButton, PageHeader } from "@/components/ui";
 import { ProspectsList, type ProspectRow } from "@/components/prospects/ProspectsList";
@@ -25,7 +26,12 @@ export default async function ProspectsPage() {
       <PageHeader
         title="Prospects"
         description="Every prospect you've researched — search, revisit, or kick off a fresh run."
-        action={<LinkButton href="/prospects/new">+ New Prospect</LinkButton>}
+        icon={Users}
+        action={
+          <LinkButton href="/prospects/new">
+            <UserPlus className="h-4 w-4" /> New Prospect
+          </LinkButton>
+        }
       />
       <ProspectsList rows={rows} />
     </div>

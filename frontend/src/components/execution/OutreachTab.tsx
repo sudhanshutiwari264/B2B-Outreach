@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AlertTriangle, CheckCircle2, Mail, MessageSquare, Pencil, XCircle } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { Execution, OutreachDraft, Signal } from "@/lib/types";
 import { Button, Card, EmptyState, ErrorBanner } from "@/components/ui";
@@ -12,16 +13,26 @@ const TERMINAL = new Set(["approved", "rejected"]);
 function ValidationChecklist({ report }: { report: OutreachDraft["validation_report"] }) {
   if (!report) return null;
   return (
-    <div className="mt-4 rounded-md border border-border bg-surface-muted px-3 py-2.5">
-      <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium">
-        <span className={report.passed ? "text-success" : "text-warning"}>
-          {report.passed ? "✓ Quality checks passed" : "⚠ Quality checks flagged issues"}
-        </span>
+    <div className="mt-4 rounded-lg border border-border bg-surface-muted px-3.5 py-3">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-medium">
+        {report.passed ? (
+          <span className="flex items-center gap-1.5 text-success">
+            <CheckCircle2 className="h-3.5 w-3.5" /> Quality checks passed
+          </span>
+        ) : (
+          <span className="flex items-center gap-1.5 text-warning">
+            <AlertTriangle className="h-3.5 w-3.5" /> Quality checks flagged issues
+          </span>
+        )}
       </div>
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-muted">
+      <ul className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted">
         {Object.entries(report.checks).map(([check, passed]) => (
           <li key={check} className="flex items-center gap-1.5">
-            <span className={passed ? "text-success" : "text-danger"}>{passed ? "✓" : "✕"}</span>
+            {passed ? (
+              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-success" />
+            ) : (
+              <XCircle className="h-3.5 w-3.5 shrink-0 text-danger" />
+            )}
             {check.replaceAll("_", " ")}
           </li>
         ))}
@@ -29,6 +40,9 @@ function ValidationChecklist({ report }: { report: OutreachDraft["validation_rep
     </div>
   );
 }
+
+const inputClass =
+  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent";
 
 function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: OutreachDraft) => void }) {
   const [editing, setEditing] = useState(false);
@@ -71,20 +85,20 @@ function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: Ou
         <div className="space-y-3">
           {draft.channel === "email" && (
             <input
-              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+              className={inputClass}
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Subject"
             />
           )}
           <textarea
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+            className={inputClass}
             rows={8}
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
           <input
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+            className={inputClass}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Reviewer notes (optional)"
@@ -92,7 +106,7 @@ function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: Ou
           <div className="flex gap-2">
             <Button
               variant="primary"
-              disabled={busy}
+              loading={busy}
               onClick={() => run(() => api.editDraft(draft.id, { subject: subject || null, body, reviewer_notes: notes || null }))}
             >
               Save changes
@@ -110,22 +124,13 @@ function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: Ou
           {!isTerminal && (
             <div className="mt-4 flex flex-wrap gap-2">
               <Button variant="secondary" disabled={busy} onClick={() => setEditing(true)}>
-                Edit
+                <Pencil className="h-3.5 w-3.5" /> Edit
               </Button>
-              <Button
-                variant="primary"
-                className="!bg-success"
-                disabled={busy}
-                onClick={() => run(() => api.approveDraft(draft.id))}
-              >
-                ✓ Approve
+              <Button variant="success" loading={busy} onClick={() => run(() => api.approveDraft(draft.id))}>
+                <CheckCircle2 className="h-3.5 w-3.5" /> Approve
               </Button>
-              <Button
-                variant="danger"
-                disabled={busy}
-                onClick={() => run(() => api.rejectDraft(draft.id))}
-              >
-                ✕ Reject
+              <Button variant="danger" disabled={busy} onClick={() => run(() => api.rejectDraft(draft.id))}>
+                <XCircle className="h-3.5 w-3.5" /> Reject
               </Button>
             </div>
           )}
@@ -170,7 +175,7 @@ function NoDraftNotice({ execution, signals }: { execution: Execution; signals: 
           "The strongest signal found didn't meet the relevance/evidence bar required for a confident, personalized outreach angle."}
       </p>
 
-      <div className="mt-4 rounded-md border border-border bg-surface-muted px-4 py-3">
+      <div className="mt-4 rounded-lg border border-border bg-surface-muted px-4 py-3.5">
         <div className="mb-1.5 flex items-center justify-between gap-2">
           <span className="text-xs font-medium uppercase tracking-wide text-muted">
             Highest-scoring signal found
@@ -216,19 +221,20 @@ export function OutreachTab({
 
   return (
     <div>
-      <div className="mb-4 flex gap-1 rounded-lg bg-surface-muted p-1 w-fit">
+      <div className="mb-4 flex w-fit gap-1 rounded-lg bg-surface-muted p-1">
         {(["email", "linkedin"] as const)
           .filter((c) => available.includes(c))
           .map((channel) => (
             <button
               key={channel}
               onClick={() => setActiveChannel(channel)}
-              className={`rounded-md px-3.5 py-1.5 text-sm font-medium capitalize transition-colors ${
+              className={`flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium capitalize transition-colors ${
                 current.channel === channel
-                  ? "bg-surface text-foreground shadow-sm"
+                  ? "bg-surface text-foreground shadow-[var(--shadow-xs)]"
                   : "text-muted hover:text-foreground"
               }`}
             >
+              {channel === "email" ? <Mail className="h-3.5 w-3.5" /> : <MessageSquare className="h-3.5 w-3.5" />}
               {channel}
             </button>
           ))}
