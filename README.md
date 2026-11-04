@@ -49,9 +49,11 @@ tests/
   end_to_end/     full workflow runs against a real test database with fake LLM/search clients
 
 frontend/         Next.js (App Router, TypeScript, Tailwind) UI - see "Frontend" below
-  src/app/        Dashboard (/), New Prospect (/prospects/new), Execution History
-                  (/executions), Execution Detail (/executions/[id]) with tabs for
-                  Overview/Sources/Signals/Outreach and live polling while running
+  src/app/        Dashboard (/), Prospects (/prospects, /prospects/[id], /prospects/new),
+                  Execution History (/executions), Execution Detail (/executions/[id])
+                  with tabs for Overview/Sources/Signals/Outreach and live polling while
+                  running, Outreach queue (/outreach) across all executions, System
+                  Status (/status) for live Tavily/Tarqa/DB connectivity
   src/lib/        typed API client (api.ts), shared types mirroring the backend schemas
   src/components/ Sidebar, status badges, cards/buttons, per-tab execution views
 
@@ -181,12 +183,24 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000. Flow: **Dashboard** (stats + recent executions) → **New
-Prospect** (form; submitting creates the prospect and immediately starts a research run,
-then redirects to the execution) → **Execution Detail** (live-polls every 4s while
-`queued`/`running`, with tabs for stage progress/Sources/Signals/Outreach) → **Execution
-History** (all past runs). The Outreach tab is where drafts are edited/approved/rejected -
-nothing is ever sent automatically; approval only flips a status flag (section 14).
+Open http://localhost:3000. Flow: **Dashboard** (stats, a "Needs Your Review" teaser
+pulled from the outreach queue, recent executions) → **New Prospect** (form; submitting
+creates the prospect and immediately starts a research run, then redirects to the
+execution) → **Execution Detail** (live-polls every 4s while `queued`/`running`, with tabs
+for stage progress/Sources/Signals/Outreach) → **Execution History** (all past runs).
+
+Other pages:
+- **Prospects** (`/prospects`) - every prospect you've added, searchable, each with a
+  "Run Research" shortcut to start a fresh execution without re-entering their details;
+  click through to `/prospects/[id]` for that prospect's full execution history.
+- **Outreach** (`/outreach`) - every generated draft across every execution in one place,
+  filterable by Needs Review / Approved / Rejected, with inline Approve/Reject - the
+  sidebar's "Outreach" link shows a live badge count of what's waiting on you. This is
+  where drafts are edited/approved/rejected; nothing is ever sent automatically - approval
+  only flips a status flag (section 14).
+- **System Status** (`/status`) - live Postgres/Tavily/Tarqa connectivity, wrapping
+  `/health` and `/health/integrations`; useful for confirming the backend is actually
+  awake before assuming something's broken (see "Cold starts" below).
 
 The frontend is a thin client over the API in `lib/api.ts` - it holds no business logic
 duplicate of the backend (scoring, validation, etc. all live server-side).
@@ -235,6 +249,28 @@ driver-suffix normalization still applies automatically).
 3. Deploy. Once you have the Vercel URL, go back to the backend's `CORS_ORIGINS` env var
    and add it (include both the stable production domain and, if you want preview
    deployments to work too, a wildcard-friendly value or each preview domain).
+
+### Cold starts on Render's free/starter tier
+
+Render's lower tiers spin the service down after ~15 minutes with no traffic; the next
+real request has to boot the container back up first, which took ~16s when measured
+against this app's actual deployed instance. This is a hosting-tier characteristic, not a
+code issue - every page load is sub-second once the backend is warm (confirmed: Dashboard
+does 3 parallel API calls that together total well under a second warm).
+
+Two ways to deal with it:
+
+1. **Upgrade the Render instance type** (Starter and above never spin down) - the only fix
+   that removes the delay entirely.
+2. **Keep it warm with an external uptime pinger** - point a free service (UptimeRobot,
+   cron-job.org, etc.) at `GET https://<your-render-url>/health` on a 5-minute interval.
+   `/health` is cheap (just checks the DB connection, no external API calls) and safe to
+   poll that often. This is what's running for this deployment. Note it burns through
+   Render's free-tier monthly hours continuously since the service never gets to sleep -
+   fine for a demo, but at that point you're most of the way to just paying for Starter.
+
+Either way, `/status` in the frontend (and `/health/integrations` directly) tells you
+immediately whether a slow load is "backend asleep" vs. an actual Tavily/Tarqa/DB problem.
 
 ## Testing
 
@@ -312,6 +348,8 @@ and chosen model actually work, not as part of the automated test suite.
   after corrective retries, the affected stage records the failure and the pipeline either
   continues with what it has or reports `insufficient_data` - it never invents a
   placeholder signal or draft.
+- `GET /api/v1/executions` accepts an optional `?prospect_id=` filter (used by the
+  frontend's per-prospect execution history) alongside the existing `limit`/`offset`.
 
 ## Known limitations / what a production hardening pass would add
 
@@ -330,7 +368,12 @@ and chosen model actually work, not as part of the automated test suite.
   previews to talk to the same backend, or add `allow_origin_regex` to the
   `CORSMiddleware` config in `app/main.py` if that gets tedious.
 - The frontend was verified via `next build`/`eslint` (both clean) and by confirming real
-  backend data renders correctly server-side (curl against the rendered HTML); the
-  interactive flows (tab switching, edit/approve/reject button handlers) were verified by
-  code review, not by driving an actual browser - no browser-automation tool was available
-  in this environment. Click through the full flow once after your first deploy.
+  backend data renders correctly server-side (curl against the rendered HTML) and that
+  actions round-trip (e.g. approving a draft via the API and watching the Dashboard's
+  pending-review count drop in the next request); the interactive flows (tab switching,
+  button click handlers) were verified by code review, not by driving an actual browser -
+  no browser-automation tool was available in this environment. Click through the full
+  flow once after your first deploy.
+- The sidebar's "Outreach" badge polls `/api/v1/outreach` every 30s on every page for a
+  live needs-review count - harmless at this scale, but if you add many more concurrent
+  users this is the first thing to move to a push-based update or longer interval.

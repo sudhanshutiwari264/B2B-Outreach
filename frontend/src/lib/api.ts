@@ -57,7 +57,10 @@ export const api = {
   getSources: (executionId: string) => request<ResearchSource[]>(`/api/v1/research/${executionId}/sources`),
   getSignals: (executionId: string) => request<Signal[]>(`/api/v1/research/${executionId}/signals`),
 
-  listExecutions: (limit = 100) => request<Execution[]>(`/api/v1/executions?limit=${limit}`),
+  listExecutions: (limit = 100, prospectId?: string) =>
+    request<Execution[]>(
+      `/api/v1/executions?limit=${limit}${prospectId ? `&prospect_id=${prospectId}` : ""}`
+    ),
   getExecutionLogs: (executionId: string) =>
     request<ExecutionLog[]>(`/api/v1/executions/${executionId}/logs`),
 

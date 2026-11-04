@@ -14,11 +14,15 @@ router = APIRouter(prefix="/api/v1/executions", tags=["executions"])
 
 @router.get("", response_model=list[ExecutionRead])
 async def list_executions(
-    limit: int = 50, offset: int = 0, db: AsyncSession = Depends(get_db)
+    prospect_id: uuid.UUID | None = None,
+    limit: int = 50,
+    offset: int = 0,
+    db: AsyncSession = Depends(get_db),
 ) -> list[Execution]:
-    result = await db.execute(
-        select(Execution).order_by(Execution.created_at.desc()).limit(limit).offset(offset)
-    )
+    query = select(Execution).order_by(Execution.created_at.desc()).limit(limit).offset(offset)
+    if prospect_id is not None:
+        query = query.where(Execution.prospect_id == prospect_id)
+    result = await db.execute(query)
     return list(result.scalars().all())
 
 
