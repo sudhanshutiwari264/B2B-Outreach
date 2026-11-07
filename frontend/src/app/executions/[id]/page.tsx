@@ -61,6 +61,11 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
     return <ErrorBanner message="Execution not found." />;
   }
 
+  const duration =
+    execution.started_at && execution.completed_at
+      ? formatDuration(new Date(execution.completed_at).getTime() - new Date(execution.started_at).getTime())
+      : null;
+
   return (
     <div>
       <Link
@@ -74,19 +79,12 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
         <div className="flex min-w-0 items-center gap-3">
           <Avatar name={prospect?.name ?? "?"} size="lg" />
           <div className="min-w-0">
-            <h1 className="truncate text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-              {prospect ? `${prospect.name} — ${prospect.company}` : "Execution"}
+            <h1 className="truncate text-lg text-ink sm:text-xl">
+              {prospect ? `${prospect.name} (${prospect.company})` : "Execution"}
             </h1>
             <p className="mt-0.5 truncate text-xs text-muted">
-              {execution.id}
-              {execution.started_at && execution.completed_at && (
-                <>
-                  {" "}
-                  · {formatDuration(
-                    new Date(execution.completed_at).getTime() - new Date(execution.started_at).getTime()
-                  )}
-                </>
-              )}
+              <span className="font-outlier">{execution.id}</span>
+              {duration && <span>, {duration}</span>}
             </p>
           </div>
         </div>
@@ -100,7 +98,7 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
         signalCount={signals.length}
       />
 
-      <div className="mb-6 overflow-x-auto border-b border-border">
+      <div className="mb-6 overflow-x-auto border-b border-rule">
         <div className="flex gap-1">
           {TABS.map((t) => {
             const Icon = t.icon;
@@ -109,18 +107,16 @@ export default function ExecutionDetailPage({ params }: { params: Promise<{ id: 
                 key={t.key}
                 onClick={() => setTab(t.key)}
                 className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors ${
-                  tab === t.key
-                    ? "border-accent text-accent"
-                    : "border-transparent text-muted hover:text-foreground"
+                  tab === t.key ? "border-accent text-accent" : "border-transparent text-muted hover:text-ink"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
                 {t.label}
                 {t.key === "sources" && sources.length > 0 && (
-                  <span className="text-xs text-muted">({sources.length})</span>
+                  <span className="font-outlier text-xs text-muted">({sources.length})</span>
                 )}
                 {t.key === "signals" && signals.length > 0 && (
-                  <span className="text-xs text-muted">({signals.length})</span>
+                  <span className="font-outlier text-xs text-muted">({signals.length})</span>
                 )}
               </button>
             );

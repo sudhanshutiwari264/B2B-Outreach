@@ -19,7 +19,7 @@ export function SourcesTab({ sources }: { sources: ResearchSource[] }) {
       <TableScroll minWidth={620}>
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+            <tr className="border-b border-rule text-left text-sm text-muted">
               <th className="px-4 py-3 font-medium sm:px-5">Source</th>
               <th className="px-4 py-3 font-medium sm:px-5">Type</th>
               <th className="px-4 py-3 font-medium sm:px-5">Evidence</th>
@@ -30,7 +30,7 @@ export function SourcesTab({ sources }: { sources: ResearchSource[] }) {
             {sources.map((s) => (
               <tr
                 key={s.id}
-                className="border-b border-border align-top transition-colors last:border-0 hover:bg-surface-muted/60"
+                className="border-b border-rule align-top transition-colors last:border-0 hover:bg-paper-3"
               >
                 <td className="max-w-md px-4 py-3 sm:px-5">
                   <a

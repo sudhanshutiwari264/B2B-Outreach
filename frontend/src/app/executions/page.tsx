@@ -19,12 +19,12 @@ export default async function ExecutionsPage() {
   return (
     <div>
       <PageHeader
-        title="Execution History"
+        title="Execution history"
         description="Track all past research executions, statuses, and outcomes."
         icon={PlayCircle}
         action={
           <LinkButton href="/prospects/new">
-            <UserPlus className="h-4 w-4" /> New Prospect
+            <UserPlus className="h-4 w-4" /> New prospect
           </LinkButton>
         }
       />
@@ -40,7 +40,7 @@ export default async function ExecutionsPage() {
           <TableScroll minWidth={640}>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                <tr className="border-b border-rule text-left text-sm text-muted">
                   <th className="px-4 py-3 font-medium sm:px-5">Prospect</th>
                   <th className="px-4 py-3 font-medium sm:px-5">Company</th>
                   <th className="px-4 py-3 font-medium sm:px-5">Started</th>
@@ -54,16 +54,16 @@ export default async function ExecutionsPage() {
                   return (
                     <tr
                       key={execution.id}
-                      className="border-b border-border transition-colors last:border-0 hover:bg-surface-muted/60"
+                      className="border-b border-rule transition-colors last:border-0 hover:bg-paper-3"
                     >
                       <td className="px-4 py-3 sm:px-5">
-                        <div className="flex items-center gap-2.5 font-medium text-foreground">
+                        <div className="flex items-center gap-2.5 font-medium text-ink">
                           <Avatar name={prospect?.name ?? "?"} size="sm" />
                           {prospect?.name ?? "Unknown prospect"}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "—"}</td>
-                      <td className="px-4 py-3 text-muted sm:px-5">
+                      <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "Unknown"}</td>
+                      <td className="px-4 py-3 font-outlier text-muted tabular-nums sm:px-5">
                         {new Date(execution.created_at).toLocaleString()}
                       </td>
                       <td className="px-4 py-3 sm:px-5">
@@ -72,9 +72,9 @@ export default async function ExecutionsPage() {
                       <td className="px-4 py-3 text-right sm:px-5">
                         <Link
                           href={`/executions/${execution.id}`}
-                          className="inline-flex items-center gap-0.5 text-sm font-medium text-accent hover:underline"
+                          className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm font-medium text-accent hover:underline"
                         >
-                          View Details <ChevronRight className="h-3.5 w-3.5" />
+                          Details <ChevronRight className="h-3.5 w-3.5" />
                         </Link>
                       </td>
                     </tr>

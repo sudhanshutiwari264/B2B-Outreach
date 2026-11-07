@@ -21,7 +21,7 @@ function activeStage(logs: ExecutionLog[]): { key: string; label: string } {
     const def = WORKFLOW_STAGES.find((s) => s.key === started.stage_name);
     return { key: started.stage_name, label: def?.label ?? started.stage_name };
   }
-  return { key: "input_validation", label: "Starting research…" };
+  return { key: "input_validation", label: "Starting research" };
 }
 
 export function LiveStatusBanner({
@@ -56,39 +56,29 @@ export function LiveStatusBanner({
 
   const completedCount = logs.filter((l) => l.status === "success").length;
   const totalStages = WORKFLOW_STAGES.length;
-  const progressPct = Math.min(100, (completedCount / totalStages) * 100);
 
   return (
-    <div className="mb-6 overflow-hidden rounded-xl border border-accent/25 bg-gradient-to-br from-accent-soft to-surface shadow-[var(--shadow-sm)]">
-      <div className="h-1 w-full bg-surface-muted">
-        <div
-          className="h-full bg-gradient-to-r from-accent to-indigo-400 transition-all duration-700 ease-out"
-          style={{ width: `${progressPct}%` }}
-        />
-      </div>
+    <div className="mb-6 rounded-card border border-rule bg-paper-2">
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
-        <div className="flex items-center gap-3">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
-          </span>
-          <div>
-            <p className="text-sm font-medium text-foreground">{stage.label}</p>
-            <p key={message} className="animate-[fadein_0.3s_ease-in] text-xs text-muted">
-              {message}
-            </p>
-          </div>
+        <div>
+          <p className="text-sm text-ink">{stage.label}</p>
+          <p key={message} className="mt-0.5 text-xs text-muted">
+            {message}
+          </p>
         </div>
-        <div className="flex items-center gap-4 text-xs text-muted">
+        <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
+          <span className="font-outlier tabular-nums text-cool">
+            stage {completedCount} of {totalStages}
+          </span>
           <span className="flex items-center gap-1.5">
             <Globe className="h-3.5 w-3.5" />
-            <span className="font-semibold text-foreground">{sourceCount}</span> sources
+            <span className="font-outlier tabular-nums text-ink">{sourceCount}</span> sources
           </span>
           <span className="flex items-center gap-1.5">
             <Zap className="h-3.5 w-3.5" />
-            <span className="font-semibold text-foreground">{signalCount}</span> signals
+            <span className="font-outlier tabular-nums text-ink">{signalCount}</span> signals
           </span>
-          <span className="flex items-center gap-1.5 font-mono tabular-nums">
+          <span className="flex items-center gap-1.5 font-outlier tabular-nums">
             <Clock className="h-3.5 w-3.5" />
             {elapsed}
           </span>

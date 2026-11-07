@@ -13,14 +13,14 @@ const TERMINAL = new Set(["approved", "rejected"]);
 function ValidationChecklist({ report }: { report: OutreachDraft["validation_report"] }) {
   if (!report) return null;
   return (
-    <div className="mt-4 rounded-lg border border-border bg-surface-muted px-3.5 py-3">
+    <div className="mt-4 rounded-card border border-rule bg-paper-3 px-3.5 py-3">
       <div className="mb-2 flex items-center gap-1.5 text-xs font-medium">
         {report.passed ? (
-          <span className="flex items-center gap-1.5 text-success">
+          <span className="flex items-center gap-1.5 text-ok">
             <CheckCircle2 className="h-3.5 w-3.5" /> Quality checks passed
           </span>
         ) : (
-          <span className="flex items-center gap-1.5 text-warning">
+          <span className="flex items-center gap-1.5 text-accent">
             <AlertTriangle className="h-3.5 w-3.5" /> Quality checks flagged issues
           </span>
         )}
@@ -29,9 +29,9 @@ function ValidationChecklist({ report }: { report: OutreachDraft["validation_rep
         {Object.entries(report.checks).map(([check, passed]) => (
           <li key={check} className="flex items-center gap-1.5">
             {passed ? (
-              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-success" />
+              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-ok" />
             ) : (
-              <XCircle className="h-3.5 w-3.5 shrink-0 text-danger" />
+              <XCircle className="h-3.5 w-3.5 shrink-0 text-bad" />
             )}
             {check.replaceAll("_", " ")}
           </li>
@@ -42,7 +42,7 @@ function ValidationChecklist({ report }: { report: OutreachDraft["validation_rep
 }
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent";
+  "w-full rounded-card border border-rule-2 bg-paper-3 px-3 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-focus";
 
 function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: OutreachDraft) => void }) {
   const [editing, setEditing] = useState(false);
@@ -118,7 +118,7 @@ function DraftCard({ draft, onChange }: { draft: OutreachDraft; onChange: (d: Ou
         </div>
       ) : (
         <>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{displayBody}</p>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">{displayBody}</p>
           <ValidationChecklist report={draft.validation_report} />
 
           {!isTerminal && (
@@ -148,7 +148,7 @@ function NoDraftNotice({ execution, signals }: { execution: Execution; signals: 
     return (
       <EmptyState
         title="No draft yet"
-        description="Research is still in progress - a draft is generated once a sufficiently strong, evidence-backed signal is found. Check the Overview tab for live status."
+        description="Research is still in progress: a draft is generated once a sufficiently strong, evidence-backed signal is found. Check the Overview tab for live status."
       />
     );
   }
@@ -169,26 +169,24 @@ function NoDraftNotice({ execution, signals }: { execution: Execution; signals: 
 
   return (
     <Card className="p-5">
-      <p className="text-sm font-medium text-foreground">No draft was generated</p>
+      <p className="text-sm font-medium text-ink">No draft was generated</p>
       <p className="mt-1 text-sm text-muted">
         {execution.failure_reason ??
           "The strongest signal found didn't meet the relevance/evidence bar required for a confident, personalized outreach angle."}
       </p>
 
-      <div className="mt-4 rounded-lg border border-border bg-surface-muted px-4 py-3.5">
+      <div className="mt-4 rounded-card border border-rule bg-paper-3 px-4 py-3.5">
         <div className="mb-1.5 flex items-center justify-between gap-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted">
-            Highest-scoring signal found
-          </span>
+          <span className="text-sm text-muted">Highest-scoring signal found</span>
           <div className="flex items-center gap-1.5">
             {topSignal.relevance_tier && <StatusBadge status={topSignal.relevance_tier} />}
-            <span className="text-sm font-semibold text-foreground">
-              {topSignal.final_score != null ? topSignal.final_score.toFixed(0) : "—"}/100
+            <span className="font-outlier text-sm tabular-nums text-ink">
+              {topSignal.final_score != null ? topSignal.final_score.toFixed(0) : "N/A"}/100
             </span>
           </div>
         </div>
-        <p className="text-sm text-foreground">{topSignal.description}</p>
-        <blockquote className="mt-2 border-l-2 border-border pl-3 text-xs italic text-muted">
+        <p className="text-sm text-ink">{topSignal.description}</p>
+        <blockquote className="mt-2 border-l-2 border-rule-2 pl-3 text-xs italic text-muted">
           &ldquo;{topSignal.evidence_excerpt}&rdquo;
         </blockquote>
       </div>
@@ -221,17 +219,15 @@ export function OutreachTab({
 
   return (
     <div>
-      <div className="mb-4 flex w-fit gap-1 rounded-lg bg-surface-muted p-1">
+      <div className="mb-4 flex w-fit gap-1 rounded-card border border-rule bg-paper-2 p-1">
         {(["email", "linkedin"] as const)
           .filter((c) => available.includes(c))
           .map((channel) => (
             <button
               key={channel}
               onClick={() => setActiveChannel(channel)}
-              className={`flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium capitalize transition-colors ${
-                current.channel === channel
-                  ? "bg-surface text-foreground shadow-[var(--shadow-xs)]"
-                  : "text-muted hover:text-foreground"
+              className={`flex h-8 items-center gap-1.5 rounded-pill px-3.5 text-sm font-medium capitalize transition-colors ${
+                current.channel === channel ? "bg-paper-3 text-ink" : "text-muted hover:text-ink"
               }`}
             >
               {channel === "email" ? <Mail className="h-3.5 w-3.5" /> : <MessageSquare className="h-3.5 w-3.5" />}

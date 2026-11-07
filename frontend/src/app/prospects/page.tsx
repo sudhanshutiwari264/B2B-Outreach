@@ -25,11 +25,11 @@ export default async function ProspectsPage() {
     <div>
       <PageHeader
         title="Prospects"
-        description="Every prospect you've researched — search, revisit, or kick off a fresh run."
+        description="Every prospect you've researched: search, revisit, or kick off a fresh run."
         icon={Users}
         action={
           <LinkButton href="/prospects/new">
-            <UserPlus className="h-4 w-4" /> New Prospect
+            <UserPlus className="h-4 w-4" /> New prospect
           </LinkButton>
         }
       />

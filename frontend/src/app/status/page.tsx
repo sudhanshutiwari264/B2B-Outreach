@@ -8,11 +8,11 @@ import { Button, Card, ErrorBanner, PageHeader } from "@/components/ui";
 
 type CheckState = "checking" | "ok" | "degraded" | "down";
 
-const STATE_STYLES: Record<CheckState, { dot: string; text: string }> = {
-  checking: { dot: "bg-muted", text: "text-muted" },
-  ok: { dot: "bg-success", text: "text-success" },
-  degraded: { dot: "bg-warning", text: "text-warning" },
-  down: { dot: "bg-danger", text: "text-danger" },
+const STATE_STYLES: Record<CheckState, { text: string; label: string }> = {
+  checking: { text: "text-muted", label: "Checking" },
+  ok: { text: "text-ok", label: "Ok" },
+  degraded: { text: "text-accent", label: "Degraded" },
+  down: { text: "text-bad", label: "Down" },
 };
 
 function StatusCard({
@@ -30,20 +30,15 @@ function StatusCard({
   return (
     <Card className="p-5">
       <div className="mb-3 flex items-center gap-2.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-muted text-muted">
-          <Icon className="h-4 w-4" strokeWidth={2} />
-        </div>
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-        <span className={`ml-auto flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide ${style.text}`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${style.dot} ${state === "checking" ? "animate-pulse" : ""}`} />
-          {state === "checking" ? "Checking…" : state}
-        </span>
+        <Icon className="h-4 w-4 text-muted" strokeWidth={1.75} />
+        <h3 className="text-sm text-ink">{title}</h3>
+        <span className={`ml-auto text-xs font-medium ${style.text}`}>{style.label}</span>
       </div>
       <dl className="space-y-1.5">
         {details.map((d) => (
           <div key={d.label} className="flex justify-between gap-4 text-sm">
             <dt className="text-muted">{d.label}</dt>
-            <dd className="truncate text-right text-foreground">{d.value}</dd>
+            <dd className="truncate text-right font-outlier text-ink">{d.value}</dd>
           </div>
         ))}
       </dl>
@@ -67,7 +62,7 @@ export default function StatusPage() {
       setIntegrations(integ);
     } catch {
       setApiError(
-        "Could not reach the backend at all. If this is the first request in a while, the server may be waking up from a cold start — try again in 15-30 seconds."
+        "Could not reach the backend at all. If this is the first request in a while, the server may be waking up from a cold start: try again in 15 to 30 seconds."
       );
       setDbOk(null);
       setIntegrations(null);
@@ -102,7 +97,7 @@ export default function StatusPage() {
   return (
     <div>
       <PageHeader
-        title="System Status"
+        title="System status"
         description="Live connectivity to the database, Tavily, and Tarqa AI."
         icon={Activity}
         action={
@@ -120,7 +115,7 @@ export default function StatusPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatusCard
-          title="Backend / Database"
+          title="Backend and database"
           icon={Database}
           state={backendState}
           details={[{ label: "Postgres", value: dbOk == null ? "unknown" : dbOk ? "connected" : "unreachable" }]}

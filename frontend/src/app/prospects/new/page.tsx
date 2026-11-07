@@ -47,7 +47,7 @@ export default function NewProspectPage() {
   return (
     <div className="mx-auto max-w-xl">
       <PageHeader
-        title="Add New Prospect"
+        title="Add a new prospect"
         description="Enter prospect details and start the AI research workflow."
         icon={UserPlus}
       />
@@ -56,7 +56,7 @@ export default function NewProspectPage() {
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && <ErrorBanner message={error} />}
 
-          <Field label="Prospect Name" required>
+          <Field label="Prospect name" required>
             <input
               required
               minLength={2}
@@ -108,7 +108,7 @@ export default function NewProspectPage() {
             />
           </Field>
 
-          <Field label="Company Website">
+          <Field label="Company website">
             <input
               type="url"
               className={inputClass}
@@ -118,7 +118,7 @@ export default function NewProspectPage() {
             />
           </Field>
 
-          <Field label="Preferred Outreach Channel">
+          <Field label="Preferred outreach channel">
             <select
               className={inputClass}
               value={outreachChannel}
@@ -129,7 +129,7 @@ export default function NewProspectPage() {
             </select>
           </Field>
 
-          <Field label="Product / Offering Context">
+          <Field label="Product or offering context">
             <textarea
               className={inputClass}
               rows={3}
@@ -141,7 +141,7 @@ export default function NewProspectPage() {
 
           <Button type="submit" loading={submitting} className="w-full">
             {!submitting && <Play className="h-4 w-4" />}
-            {submitting ? "Starting research…" : "Start Research"}
+            {submitting ? "Starting research" : "Start research"}
           </Button>
         </form>
       </Card>
@@ -150,7 +150,7 @@ export default function NewProspectPage() {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent";
+  "w-full rounded-card border border-rule-2 bg-paper-3 px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-focus";
 
 function Field({
   label,
@@ -163,9 +163,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-foreground">
+      <span className="mb-1.5 block text-sm font-medium text-ink">
         {label}
-        {required && <span className="text-danger"> *</span>}
+        {required && <span className="text-bad"> *</span>}
       </span>
       {children}
     </label>

@@ -1,14 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  LayoutDashboard,
-  Mail,
-  MessageSquare,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { ArrowRight, LayoutDashboard, Mail, MessageSquare, UserPlus } from "lucide-react";
 import { api } from "@/lib/api";
 import { Card, EmptyState, LinkButton, PageHeader, StatTile, TableScroll } from "@/components/ui";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -46,27 +37,22 @@ export default async function DashboardPage() {
         icon={LayoutDashboard}
         action={
           <LinkButton href="/prospects/new">
-            <UserPlus className="h-4 w-4" /> New Prospect
+            <UserPlus className="h-4 w-4" /> New prospect
           </LinkButton>
         }
       />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatTile label="Total Prospects" value={prospects.length} icon={Users} />
-        <StatTile label="Completed" value={completed} href="/executions" icon={CheckCircle2} />
-        <StatTile
-          label="Pending Review"
-          value={needsReview.length}
-          href="/outreach?filter=needs_review"
-          icon={Clock}
-        />
-        <StatTile label="Approved" value={approved} href="/outreach?filter=approved" icon={CheckCircle2} />
+        <StatTile label="Total prospects" value={prospects.length} />
+        <StatTile label="Completed" value={completed} href="/executions" />
+        <StatTile label="Pending review" value={needsReview.length} href="/outreach?filter=needs_review" />
+        <StatTile label="Approved" value={approved} href="/outreach?filter=approved" />
       </div>
 
       {needsReviewPreview.length > 0 && (
         <div className="mt-8">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-foreground">Needs Your Review</h2>
+            <h2 className="text-sm text-ink">Needs your review</h2>
             <Link
               href="/outreach"
               className="flex items-center gap-1 text-xs font-medium text-accent hover:underline"
@@ -81,16 +67,16 @@ export default async function DashboardPage() {
               const body = draft.edited_body ?? draft.body;
               return (
                 <Link key={draft.id} href={`/executions/${draft.execution_id}?tab=outreach`}>
-                  <Card hover className="px-4 py-3.5 hover:border-accent/40 sm:px-5">
+                  <Card className="px-4 py-3.5 transition-colors hover:bg-paper-3 sm:px-5">
                     <div className="flex items-start gap-3">
                       <Avatar name={prospect?.name ?? "?"} />
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-medium text-foreground">
+                          <span className="font-medium text-ink">
                             {prospect?.name ?? "Unknown prospect"}
                           </span>
                           {prospect?.company && (
-                            <span className="text-sm text-muted">— {prospect.company}</span>
+                            <span className="text-sm text-muted">({prospect.company})</span>
                           )}
                           <span className="flex items-center gap-1 text-xs text-muted">
                             {draft.channel === "email" ? (
@@ -115,7 +101,7 @@ export default async function DashboardPage() {
       )}
 
       <div className="mt-8">
-        <h2 className="mb-3 text-sm font-semibold text-foreground">Recent Executions</h2>
+        <h2 className="mb-3 text-sm text-ink">Recent executions</h2>
         {recentExecutions.length === 0 ? (
           <EmptyState
             title="No executions yet"
@@ -127,7 +113,7 @@ export default async function DashboardPage() {
             <TableScroll>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                  <tr className="border-b border-rule text-left text-sm text-muted">
                     <th className="px-4 py-3 font-medium sm:px-5">Prospect</th>
                     <th className="px-4 py-3 font-medium sm:px-5">Company</th>
                     <th className="px-4 py-3 font-medium sm:px-5">Date</th>
@@ -140,19 +126,19 @@ export default async function DashboardPage() {
                     return (
                       <tr
                         key={execution.id}
-                        className="border-b border-border transition-colors last:border-0 hover:bg-surface-muted/60"
+                        className="border-b border-rule transition-colors last:border-0 hover:bg-paper-3"
                       >
                         <td className="px-4 py-3 sm:px-5">
                           <Link
                             href={`/executions/${execution.id}`}
-                            className="flex items-center gap-2.5 font-medium text-foreground hover:text-accent"
+                            className="flex items-center gap-2.5 font-medium text-ink hover:text-accent"
                           >
                             <Avatar name={prospect?.name ?? "?"} size="sm" />
                             {prospect?.name ?? "Unknown prospect"}
                           </Link>
                         </td>
-                        <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "—"}</td>
-                        <td className="px-4 py-3 text-muted sm:px-5">
+                        <td className="px-4 py-3 text-muted sm:px-5">{prospect?.company ?? "Unknown"}</td>
+                        <td className="px-4 py-3 font-outlier text-muted tabular-nums sm:px-5">
                           {new Date(execution.created_at).toLocaleDateString()}
                         </td>
                         <td className="px-4 py-3 sm:px-5">

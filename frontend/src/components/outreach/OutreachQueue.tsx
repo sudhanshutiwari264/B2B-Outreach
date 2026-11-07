@@ -19,7 +19,7 @@ export interface QueueItem {
 const NEEDS_REVIEW_STATUSES = new Set(["draft_generated", "pending_review", "edited"]);
 
 const FILTERS = [
-  { key: "needs_review", label: "Needs Review" },
+  { key: "needs_review", label: "Needs review" },
   { key: "approved", label: "Approved" },
   { key: "rejected", label: "Rejected" },
   { key: "all", label: "All" },
@@ -64,7 +64,7 @@ function QueueRow({
   }
 
   return (
-    <Card hover className="p-4 sm:p-5">
+    <Card className="p-4 transition-colors hover:bg-paper-3 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 flex-1 gap-3">
           <Avatar name={prospectName} />
@@ -72,11 +72,11 @@ function QueueRow({
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={`/executions/${draft.execution_id}?tab=outreach`}
-                className="font-medium text-foreground hover:text-accent"
+                className="font-medium text-ink hover:text-accent"
               >
                 {prospectName}
               </Link>
-              {prospectCompany && <span className="text-sm text-muted">— {prospectCompany}</span>}
+              {prospectCompany && <span className="text-sm text-muted">({prospectCompany})</span>}
               <StatusBadge status={draft.status} />
               <span className="flex items-center gap-1 text-xs text-muted">
                 {draft.channel === "email" ? (
@@ -88,7 +88,7 @@ function QueueRow({
               </span>
             </div>
             {draft.channel === "email" && draft.subject && (
-              <p className="mt-1.5 text-sm font-medium text-foreground">{draft.subject}</p>
+              <p className="mt-1.5 text-sm font-medium text-ink">{draft.subject}</p>
             )}
             <p className="mt-1 text-sm text-muted">{preview}</p>
             {error && (
@@ -102,7 +102,7 @@ function QueueRow({
         <div className="flex shrink-0 flex-wrap gap-2">
           <Link
             href={`/executions/${draft.execution_id}?tab=outreach`}
-            className="inline-flex items-center justify-center rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-xs)] transition-colors hover:bg-surface-muted"
+            className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-pill border border-rule-2 bg-paper-2 px-3.5 text-sm font-medium text-ink transition-colors hover:bg-paper-3"
           >
             Open
           </Link>
@@ -139,15 +139,13 @@ export function OutreachQueue({ items: initialItems }: { items: QueueItem[] }) {
 
   return (
     <div>
-      <div className="mb-5 flex w-fit gap-1 overflow-x-auto rounded-lg bg-surface-muted p-1">
+      <div className="mb-5 flex w-fit gap-1 overflow-x-auto rounded-card border border-rule bg-paper-2 p-1">
         {FILTERS.map((f) => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors ${
-              filter === f.key
-                ? "bg-surface text-foreground shadow-[var(--shadow-xs)]"
-                : "text-muted hover:text-foreground"
+            className={`h-8 shrink-0 whitespace-nowrap rounded-pill px-3.5 text-sm font-medium transition-colors ${
+              filter === f.key ? "bg-paper-3 text-ink" : "text-muted hover:text-ink"
             }`}
           >
             {f.label}

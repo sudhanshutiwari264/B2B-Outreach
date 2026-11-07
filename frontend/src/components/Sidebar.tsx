@@ -8,7 +8,6 @@ import {
   type LucideIcon,
   Mail,
   PlayCircle,
-  Sparkles,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -17,7 +16,7 @@ import { useNeedsReviewCount } from "@/lib/useNeedsReviewCount";
 const NAV_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/prospects", label: "Prospects", icon: Users },
-  { href: "/prospects/new", label: "New Prospect", icon: UserPlus },
+  { href: "/prospects/new", label: "New prospect", icon: UserPlus },
   { href: "/executions", label: "Executions", icon: PlayCircle },
   { href: "/outreach", label: "Outreach", icon: Mail },
 ];
@@ -47,20 +46,15 @@ function NavLink({
     <Link
       href={href}
       onClick={onNavigate}
-      className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all duration-150 ${
-        active ? "bg-white/[0.08] font-medium text-white" : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
+      className={`group relative flex items-center gap-2.5 rounded-pill px-3 py-2 text-sm transition-colors duration-150 ${
+        active ? "bg-paper-3 text-ink" : "text-muted hover:bg-paper-3 hover:text-ink"
       }`}
     >
-      {active && (
-        <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-accent" />
-      )}
-      <Icon
-        className={`h-[17px] w-[17px] shrink-0 transition-colors ${active ? "text-accent" : "text-slate-500 group-hover:text-slate-300"}`}
-        strokeWidth={2}
-      />
+      {active && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-accent" />}
+      <Icon className={`h-[17px] w-[17px] shrink-0 ${active ? "text-accent" : "text-muted"}`} strokeWidth={1.75} />
       <span className="flex-1">{label}</span>
       {!!badge && (
-        <span className="rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold leading-none text-accent-foreground">
+        <span className="rounded-[4px] border border-accent-soft bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium leading-none text-accent">
           {badge}
         </span>
       )}
@@ -73,12 +67,10 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const needsReviewCount = useNeedsReviewCount();
 
   return (
-    <div className="flex h-full flex-col bg-[#0b0c10] text-slate-200">
+    <div className="flex h-full flex-col bg-paper border-r border-rule">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-indigo-800 shadow-[var(--shadow-sm)]">
-          <Sparkles className="h-4 w-4 text-white" strokeWidth={2.25} />
-        </div>
-        <span className="text-sm font-semibold tracking-tight text-white">GTM Outreach</span>
+        <span className="font-outlier text-sm text-accent">&gt;_</span>
+        <span className="text-sm text-ink">GTM Outreach</span>
       </div>
 
       <nav className="flex-1 space-y-0.5 px-3 py-2">
@@ -95,20 +87,20 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="border-t border-white/[0.06] px-3 py-3">
+      <div className="border-t border-rule px-3 py-3">
         <NavLink
           href="/status"
-          label="System Status"
+          label="System status"
           icon={Activity}
           active={pathname === "/status"}
           onNavigate={onNavigate}
         />
       </div>
 
-      <div className="border-t border-white/[0.06] px-5 py-4 text-xs text-slate-500">
-        Personalized Outreach
+      <div className="border-t border-rule px-5 py-4 text-xs text-muted">
+        Personalized outreach
         <br />
-        Intelligence Engine
+        intelligence engine
       </div>
     </div>
   );

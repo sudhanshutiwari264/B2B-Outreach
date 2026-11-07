@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Play, Search, Users } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { Prospect } from "@/lib/types";
-import { Card, EmptyState, ErrorBanner, TableScroll } from "@/components/ui";
+import { Button, Card, EmptyState, ErrorBanner, TableScroll } from "@/components/ui";
 import { Avatar } from "@/components/Avatar";
 
 export interface ProspectRow {
@@ -45,7 +45,7 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by name, company, or title…"
-          className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
+          className="h-9 w-full rounded-pill border border-rule-2 bg-paper-2 py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-focus"
         />
       </div>
 
@@ -70,7 +70,7 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
           <TableScroll minWidth={680}>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                <tr className="border-b border-rule text-left text-sm text-muted">
                   <th className="px-4 py-3 font-medium sm:px-5">Name</th>
                   <th className="px-4 py-3 font-medium sm:px-5">Company</th>
                   <th className="px-4 py-3 font-medium sm:px-5">Title</th>
@@ -82,12 +82,12 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
                 {filtered.map(({ prospect, executionCount }) => (
                   <tr
                     key={prospect.id}
-                    className="border-b border-border transition-colors last:border-0 hover:bg-surface-muted/60"
+                    className="border-b border-rule transition-colors last:border-0 hover:bg-paper-3"
                   >
                     <td className="px-4 py-3 sm:px-5">
                       <Link
                         href={`/prospects/${prospect.id}`}
-                        className="flex items-center gap-2.5 font-medium text-foreground hover:text-accent"
+                        className="flex items-center gap-2.5 font-medium text-ink hover:text-accent"
                       >
                         <Avatar name={prospect.name} size="sm" />
                         {prospect.name}
@@ -95,16 +95,18 @@ export function ProspectsList({ rows }: { rows: ProspectRow[] }) {
                     </td>
                     <td className="px-4 py-3 text-muted sm:px-5">{prospect.company}</td>
                     <td className="px-4 py-3 text-muted sm:px-5">{prospect.designation}</td>
-                    <td className="px-4 py-3 text-muted sm:px-5">{executionCount}</td>
+                    <td className="px-4 py-3 font-outlier text-muted tabular-nums sm:px-5">
+                      {executionCount}
+                    </td>
                     <td className="px-4 py-3 text-right sm:px-5">
-                      <button
+                      <Button
+                        variant="secondary"
+                        loading={runningId === prospect.id}
                         onClick={() => handleRunResearch(prospect.id)}
-                        disabled={runningId === prospect.id}
-                        className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline disabled:opacity-50"
                       >
-                        <Play className="h-3.5 w-3.5" />
-                        {runningId === prospect.id ? "Starting…" : "Run Research"}
-                      </button>
+                        {runningId !== prospect.id && <Play className="h-3.5 w-3.5" />}
+                        {runningId === prospect.id ? "Starting" : "Research"}
+                      </Button>
                     </td>
                   </tr>
                 ))}

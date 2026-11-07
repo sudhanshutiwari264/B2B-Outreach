@@ -2,23 +2,16 @@ import Link from "next/link";
 import { AlertCircle, Inbox, Loader2, type LucideIcon } from "lucide-react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
+/** A hairline panel: 1px rule, one surface step up, no shadow (Console never floats a card). */
 export function Card({
   children,
   className = "",
-  hover = false,
 }: {
   children: ReactNode;
   className?: string;
-  hover?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-xl border border-border bg-surface shadow-[var(--shadow-sm)] transition-shadow duration-200 ${
-        hover ? "hover:shadow-[var(--shadow-md)]" : ""
-      } ${className}`}
-    >
-      {children}
-    </div>
+    <div className={`rounded-card border border-rule bg-paper-2 ${className}`}>{children}</div>
   );
 }
 
@@ -45,13 +38,9 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div className="flex min-w-0 items-start gap-3">
-        {Icon && (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent">
-            <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
-          </div>
-        )}
+        {Icon && <Icon className="mt-0.5 h-5 w-5 shrink-0 text-muted" strokeWidth={1.75} />}
         <div className="min-w-0">
-          <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">{title}</h1>
+          <h1 className="text-lg text-ink">{title}</h1>
           {description && <p className="mt-1 text-sm text-muted">{description}</p>}
         </div>
       </div>
@@ -62,16 +51,15 @@ export function PageHeader({
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "success" | "ghost";
 
+// Console's pair: an amber fill primary beside a rule-outline secondary. Ok/bad exist only
+// for diffs and status, never as a button fill, so danger/success stay outline + text tint.
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary:
-    "bg-accent text-accent-foreground shadow-[var(--shadow-xs)] hover:bg-accent-hover active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100",
+  primary: "bg-accent text-accent-ink hover:brightness-110 active:brightness-95 disabled:opacity-50",
   secondary:
-    "border border-border bg-surface text-foreground shadow-[var(--shadow-xs)] hover:bg-surface-muted active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100",
-  danger:
-    "bg-danger text-white shadow-[var(--shadow-xs)] hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100",
-  success:
-    "bg-success text-white shadow-[var(--shadow-xs)] hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100",
-  ghost: "text-muted hover:bg-surface-muted hover:text-foreground disabled:opacity-50",
+    "border border-rule-2 bg-paper-2 text-ink hover:bg-paper-3 active:bg-paper disabled:opacity-50",
+  danger: "border border-rule-2 bg-paper-2 text-bad hover:bg-bad-soft disabled:opacity-50",
+  success: "border border-rule-2 bg-paper-2 text-ok hover:bg-ok-soft disabled:opacity-50",
+  ghost: "text-muted hover:bg-paper-3 hover:text-ink disabled:opacity-50",
 };
 
 export function Button({
@@ -84,7 +72,7 @@ export function Button({
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant; loading?: boolean }) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150 ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-pill px-3.5 text-sm font-medium transition-colors duration-150 ${VARIANT_CLASSES[variant]} ${className}`}
       disabled={disabled || loading}
       {...props}
     >
@@ -108,44 +96,27 @@ export function LinkButton({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150 ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-pill px-3.5 text-sm font-medium transition-colors duration-150 ${VARIANT_CLASSES[variant]} ${className}`}
     >
       {children}
     </Link>
   );
 }
 
-export function StatTile({
-  label,
-  value,
-  href,
-  icon: Icon,
-}: {
-  label: string;
-  value: string | number;
-  href?: string;
-  icon?: LucideIcon;
-}) {
+/** A reading: the figure in the measured (mono) face, tabular, the label beneath it in the
+ * body face. No icon tile, no gradient, no trend arrow nobody measured (app-screen figures). */
+export function StatTile({ label, value, href }: { label: string; value: string | number; href?: string }) {
   const inner = (
-    <div className="flex items-start justify-between gap-3">
-      <div>
-        <div className="text-2xl font-semibold tracking-tight text-foreground">{value}</div>
-        <div className="mt-0.5 text-xs text-muted">{label}</div>
-      </div>
-      {Icon && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent">
-          <Icon className="h-4 w-4" strokeWidth={2} />
-        </div>
-      )}
-    </div>
+    <>
+      <div className="font-outlier text-2xl tabular-nums text-ink">{value}</div>
+      <div className="mt-0.5 text-sm text-muted">{label}</div>
+    </>
   );
 
   if (href) {
     return (
       <Link href={href} className="block">
-        <Card hover className="px-4 py-3.5 hover:border-accent/40">
-          {inner}
-        </Card>
+        <Card className="px-4 py-3.5 transition-colors hover:bg-paper-3">{inner}</Card>
       </Link>
     );
   }
@@ -163,11 +134,9 @@ export function EmptyState({
   icon?: LucideIcon;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/50 py-14 text-center">
-      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-surface-muted text-muted">
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
-      </div>
-      <p className="text-sm font-medium text-foreground">{title}</p>
+    <div className="flex flex-col items-center justify-center rounded-card border border-dashed border-rule py-14 text-center">
+      <Icon className="mb-3 h-5 w-5 text-muted" strokeWidth={1.5} />
+      <p className="text-sm text-ink">{title}</p>
       {description && <p className="mt-1 max-w-sm px-4 text-sm text-muted">{description}</p>}
     </div>
   );
@@ -179,7 +148,7 @@ export function Spinner({ className = "" }: { className?: string }) {
 
 export function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-2.5 rounded-lg border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">
+    <div className="flex items-start gap-2.5 rounded-card border border-rule bg-bad-soft px-4 py-3 text-sm text-bad">
       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} />
       <span>{message}</span>
     </div>

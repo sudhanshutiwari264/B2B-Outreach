@@ -1,21 +1,3 @@
-const PALETTE = [
-  "bg-indigo-500/15 text-indigo-600 dark:text-indigo-300",
-  "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300",
-  "bg-amber-500/15 text-amber-600 dark:text-amber-300",
-  "bg-rose-500/15 text-rose-600 dark:text-rose-300",
-  "bg-sky-500/15 text-sky-600 dark:text-sky-300",
-  "bg-violet-500/15 text-violet-600 dark:text-violet-300",
-];
-
-function hashString(value: string): number {
-  let hash = 0;
-  for (let i = 0; i < value.length; i++) {
-    hash = (hash << 5) - hash + value.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
@@ -29,11 +11,12 @@ const SIZE_CLASSES = {
   lg: "h-12 w-12 text-sm",
 };
 
+/** A person's initials, not a figure: on the paper's deepest step, in the muted ink, inside
+ * a 1px rule. Console keeps one accent for a person's state, not one per name. */
 export function Avatar({ name, size = "md" }: { name: string; size?: keyof typeof SIZE_CLASSES }) {
-  const colorClass = PALETTE[hashString(name) % PALETTE.length];
   return (
     <span
-      className={`flex shrink-0 items-center justify-center rounded-full font-semibold ${SIZE_CLASSES[size]} ${colorClass}`}
+      className={`flex shrink-0 items-center justify-center rounded-full border border-rule bg-paper-3 font-medium text-muted ${SIZE_CLASSES[size]}`}
     >
       {initials(name)}
     </span>

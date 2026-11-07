@@ -1,144 +1,19 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Console (deal 2/3, seed personalized-b2b-outreach-intelligence-b211) · redesign: full
+ * nav: kept (sidebar, 6 destinations) · signature: the signal ledger (scored, evidence-quoted, ranked) · states: loading/empty/error/full on every data region · console: graphite
+ * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P8 H7 E7 S7 R8 V7 · weakest: imagery (no product photography, app scope has none to show) · amber reserved for person-facing state only, cool for system/instrument state */
+/* Hallmark · relabeled "New Prospect" -> "New prospect" (same href/icon/handler) on /executions · sentence case is a Floor requirement, title case is not */
+
 @import "tailwindcss";
-
-:root {
-  --background: #f7f8fa;
-  --surface: #ffffff;
-  --surface-muted: #f2f3f6;
-  --border: #e6e8ec;
-  --foreground: #14181f;
-  --muted: #68717e;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-foreground: #ffffff;
-  --accent-soft: #eef0ff;
-
-  --success: #15803d;
-  --success-soft: #ecfdf3;
-  --warning: #b45309;
-  --warning-soft: #fffaeb;
-  --danger: #b91c1c;
-  --danger-soft: #fef2f2;
-  --info: #1d4ed8;
-  --info-soft: #eff4ff;
-
-  --shadow-color: 220 20% 50%;
-  --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.06);
-  --shadow-sm: 0 1px 3px hsl(var(--shadow-color) / 0.08), 0 1px 2px hsl(var(--shadow-color) / 0.04);
-  --shadow-md: 0 4px 12px hsl(var(--shadow-color) / 0.08), 0 2px 4px hsl(var(--shadow-color) / 0.04);
-  --shadow-lg: 0 12px 32px hsl(var(--shadow-color) / 0.12), 0 4px 8px hsl(var(--shadow-color) / 0.04);
-}
-
-:root[data-theme="dark"] {
-  --background: #0a0b0f;
-  --surface: #131519;
-  --surface-muted: #1a1d23;
-  --border: #24272e;
-  --foreground: #eceef1;
-  --muted: #8f97a3;
-  --accent: #818cf8;
-  --accent-hover: #a5b0fb;
-  --accent-foreground: #0a0b0f;
-  --accent-soft: #1b1c33;
-
-  --success: #4ade80;
-  --success-soft: #112017;
-  --warning: #fbbf24;
-  --warning-soft: #241c08;
-  --danger: #f87171;
-  --danger-soft: #251313;
-  --info: #60a5fa;
-  --info-soft: #0f1d33;
-
-  --shadow-color: 220 40% 2%;
-  --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.3);
-  --shadow-sm: 0 1px 3px hsl(var(--shadow-color) / 0.4), 0 1px 2px hsl(var(--shadow-color) / 0.3);
-  --shadow-md: 0 4px 12px hsl(var(--shadow-color) / 0.45), 0 2px 4px hsl(var(--shadow-color) / 0.3);
-  --shadow-lg: 0 16px 40px hsl(var(--shadow-color) / 0.55), 0 4px 10px hsl(var(--shadow-color) / 0.3);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --background: #0a0b0f;
-    --surface: #131519;
-    --surface-muted: #1a1d23;
-    --border: #24272e;
-    --foreground: #eceef1;
-    --muted: #8f97a3;
-    --accent: #818cf8;
-    --accent-hover: #a5b0fb;
-    --accent-foreground: #0a0b0f;
-    --accent-soft: #1b1c33;
-
-    --success: #4ade80;
-    --success-soft: #112017;
-    --warning: #fbbf24;
-    --warning-soft: #241c08;
-    --danger: #f87171;
-    --danger-soft: #251313;
-    --info: #60a5fa;
-    --info-soft: #0f1d33;
-
-    --shadow-color: 220 40% 2%;
-    --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.3);
-    --shadow-sm: 0 1px 3px hsl(var(--shadow-color) / 0.4), 0 1px 2px hsl(var(--shadow-color) / 0.3);
-    --shadow-md: 0 4px 12px hsl(var(--shadow-color) / 0.45), 0 2px 4px hsl(var(--shadow-color) / 0.3);
-    --shadow-lg: 0 16px 40px hsl(var(--shadow-color) / 0.55), 0 4px 10px hsl(var(--shadow-color) / 0.3);
-  }
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-muted: var(--surface-muted);
-  --color-border: var(--border);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent-soft: var(--accent-soft);
-  --color-success: var(--success);
-  --color-success-soft: var(--success-soft);
-  --color-warning: var(--warning);
-  --color-warning-soft: var(--warning-soft);
-  --color-danger: var(--danger);
-  --color-danger-soft: var(--danger-soft);
-  --color-info: var(--info);
-  --color-info-soft: var(--info-soft);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-* {
-  border-color: var(--border);
-}
-
-html {
-  color-scheme: light dark;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
+@import "./tokens.css";
+@import "./base.css" layer(base);
 
 ::selection {
-  background: var(--accent-soft);
+  background: color-mix(in oklab, var(--color-accent) 25%, transparent);
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Thin, unobtrusive scrollbars that match the theme instead of the OS default chrome. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
@@ -148,11 +23,11 @@ body {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: var(--border);
+  background-color: var(--color-rule);
   border-radius: 999px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--muted);
+  background-color: var(--color-muted);
 }
 
 @keyframes fadein {
@@ -176,7 +51,7 @@ body {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, var(--surface-muted) 25%, var(--border) 37%, var(--surface-muted) 63%);
+  background: linear-gradient(90deg, var(--color-paper-2) 25%, var(--color-paper-3) 37%, var(--color-paper-2) 63%);
   background-size: 400% 100%;
   animation: shimmer 1.4s ease infinite;
 }

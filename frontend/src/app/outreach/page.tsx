@@ -28,7 +28,7 @@ export default async function OutreachQueuePage() {
     <div>
       <PageHeader
         title="Outreach"
-        description="Every generated message in one place — review, approve, or reject without digging through executions."
+        description="Every generated message in one place: review, approve, or reject without digging through executions."
         icon={Mail}
       />
       <Suspense fallback={<Spinner />}>

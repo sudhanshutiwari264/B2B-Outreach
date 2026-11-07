@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sidebar, SidebarContent } from "./Sidebar";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -19,36 +19,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-full min-h-screen bg-background text-foreground">
+    <div className="flex h-full min-h-screen bg-paper text-ink">
       <Sidebar />
 
       {drawerOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <button
             aria-label="Close menu"
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-paper-3/90"
             onClick={() => setDrawerOpen(false)}
           />
-          <div className="relative h-full w-64 max-w-[80vw] shadow-[var(--shadow-lg)] animate-[fadein_0.15s_ease-out]">
+          <div className="relative h-full w-64 max-w-[80vw] border-r border-rule animate-[fadein_0.15s_ease-out]">
             <SidebarContent onNavigate={() => setDrawerOpen(false)} />
           </div>
         </div>
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center gap-3 border-b border-border bg-surface/80 px-4 py-3 backdrop-blur-sm md:hidden">
+        <header className="flex items-center gap-3 border-b border-rule bg-paper px-4 py-3 md:hidden">
           <button
             aria-label="Open menu"
             onClick={() => setDrawerOpen(true)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-surface-muted"
+            className="flex h-8 w-8 items-center justify-center rounded-pill border border-rule-2 text-ink transition-colors hover:bg-paper-3"
           >
-            <Menu className="h-4 w-4" strokeWidth={2} />
+            <Menu className="h-4 w-4" strokeWidth={1.75} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-accent to-indigo-800">
-              <Sparkles className="h-3.5 w-3.5 text-white" strokeWidth={2.25} />
-            </div>
-            <span className="text-sm font-semibold tracking-tight text-foreground">GTM Outreach</span>
+            <span className="font-outlier text-sm text-accent">&gt;_</span>
+            <span className="text-sm text-ink">GTM Outreach</span>
           </div>
         </header>
 
